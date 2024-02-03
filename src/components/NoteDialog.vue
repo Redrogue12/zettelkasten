@@ -1,12 +1,24 @@
 <template>
-  <label>
-    <span>Title:</span>
-    <input ref="titleInput" v-model="localNote.note_title" />
-  </label>
-  <label>
-    <span>Content:</span>
-    <textarea v-model="localNote.note_text"></textarea>
-  </label>
+  <div class="dialog" v-if="selectedNote">
+    <h2>Edit Note</h2>
+    <div class="form-group">
+      <label
+        ><span>Title:</span>
+        <input ref="titleInput" v-model="localNote.note_title" />
+      </label>
+      <label
+        ><span>Content:</span>
+        <textarea v-model="localNote.note_text"></textarea>
+      </label>
+    </div>
+    <button @click="editNote">Submit</button>
+    <button @click="$emit('closeDialog')">Close</button>
+    <p class="note-dates">
+      Created: {{ new Date(selectedNote.date_created).toLocaleDateString() }}
+      <br />
+      Modified: {{ new Date(selectedNote.date_modified).toLocaleDateString() }}
+    </p>
+  </div>
 </template>
 
 <script>

@@ -7,18 +7,18 @@
 
 <script>
 export default {
-  name: 'NoteCard',
+  name: "NoteCard",
   props: {
     note: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     openDialog() {
-      this.$emit('open-dialog', this.note);
-    }
-  }
+      this.$emit("open-dialog", this.note);
+    },
+  },
 };
 </script>
 
