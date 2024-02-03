@@ -1,26 +1,19 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <Dashboard-Page />
+  <div id="app">
+    <NavBar />
+    <router-view />
+  </div>
 </template>
 
 <script>
-import DashboardPage from './components/DashboardPage.vue'
+import NavBar from './components/NavBar.vue';
+import router from './router';
+import './assets/styles.css';
 
 export default {
-  name: 'App',
+  router,
   components: {
-    DashboardPage
-  }
-}
+    NavBar,
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
