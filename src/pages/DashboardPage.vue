@@ -43,7 +43,6 @@ export default {
   methods: {
     openDialog(note) {
       this.selectedNote = { ...note };
-      this.$refs.titleInput?.focus();
     },
     closeDialog() {
       this.selectedNote = null;
