@@ -17,7 +17,7 @@
       <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
     </Dialog>
     <Dialog :open="create" @close-dialog="create = false">
-      <CreateNote @created="create = false" />
+      <CreateNote @created="onNoteCreated" />
     </Dialog>
   </div>
 </template>
@@ -45,14 +45,17 @@ export default {
     };
   },
   async created() {
-    try {
-      const response = await fetch("http://localhost:3000/notes");
-      this.notes = await response.json();
-    } catch (error) {
-      console.error("Failed to fetch notes");
-    }
+    this.fetchNotes();
   },
   methods: {
+    async fetchNotes() {
+      try {
+        const response = await fetch("http://localhost:3000/notes");
+        this.notes = await response.json();
+      } catch (error) {
+        console.error("Failed to fetch notes");
+      }
+    },
     editDialog(note) {
       this.selectedNote = { ...note };
       this.edit = true;
@@ -60,6 +63,10 @@ export default {
     closeEdit() {
       this.selectedNote = null;
       this.edit = false;
+    },
+    onNoteCreated() {
+      this.create = false;
+      this.fetchNotes();
     },
   },
 };
