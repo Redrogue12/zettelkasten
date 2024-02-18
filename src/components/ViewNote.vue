@@ -21,6 +21,11 @@
       @click.stop="deleteNote"
     />
   </div>
+  <hr />
+  <h5>Linked Notes</h5>
+  <router-link :to="`links/${rn.id}`" v-for="rn in relatedNotes" :key="rn.id">{{
+    rn.note_title
+  }}</router-link>
 </template>
 
 <script>
@@ -34,7 +39,15 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      relatedNotes: [],
+    };
+  },
   emits: ["click", "edit-dialog", "deleted"],
+  mounted() {
+    this.fetchRelatedNotes();
+  },
   methods: {
     editDialog() {
       this.$emit("edit-dialog", this.note);
@@ -43,6 +56,20 @@ export default {
       try {
         await axios.delete(`http://localhost:3000/notes/${this.note.id}`);
         this.$emit("deleted");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async fetchRelatedNotes() {
+      const id = this.note.id;
+      try {
+        const response = await axios.get(`http://localhost:3000/links/${id}`);
+
+        if (response.status === 200) {
+          this.relatedNotes = response.data;
+        } else {
+          console.log("Failed to fetch related notes");
+        }
       } catch (error) {
         console.error(error);
       }
