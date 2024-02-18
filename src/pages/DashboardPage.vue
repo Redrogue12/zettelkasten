@@ -9,9 +9,19 @@
         v-for="note in notes"
         :key="note.id"
         :note="note"
-        @click="editDialog(note)"
+        @click="viewNote(note)"
       />
     </div>
+
+    <Dialog :open="view" @close-dialog="view = false">
+      <font-awesome-icon
+        class="dialog-edit-icon"
+        icon="edit"
+        @click.stop="editDialog(selectedNote)"
+      />
+      <h3>{{ selectedNote?.note_title }}</h3>
+      <p>{{ selectedNote?.note_text }}</p>
+    </Dialog>
 
     <Dialog :open="edit" @close-dialog="closeEdit">
       <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
@@ -42,6 +52,7 @@ export default {
       selectedNote: null,
       edit: false,
       create: false,
+      view: false,
     };
   },
   async created() {
@@ -56,8 +67,16 @@ export default {
         console.error("Failed to fetch notes");
       }
     },
-    editDialog(note) {
+    viewNote(note) {
+      this.setNote(note);
+      this.view = true;
+    },
+    setNote(note) {
       this.selectedNote = { ...note };
+    },
+    editDialog(note) {
+      this.view = false;
+      this.setNote(note);
       this.edit = true;
     },
     closeEdit() {
@@ -77,5 +96,11 @@ export default {
 .dashboard {
   display: flex;
   flex-wrap: wrap;
+}
+.dialog-edit-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 </style>
