@@ -13,20 +13,21 @@
       />
     </div>
 
-    <Dialog :open="view" @close-dialog="view = false">
+    <Dialog v-if="view" @close-dialog="view = false">
       <font-awesome-icon
         class="dialog-edit-icon"
         icon="edit"
         @click.stop="editDialog(selectedNote)"
       />
+      <font-awesome-icon class="dialog-link-icon" icon="link" />
       <h3>{{ selectedNote?.note_title }}</h3>
       <p>{{ selectedNote?.note_text }}</p>
     </Dialog>
 
-    <Dialog :open="edit" @close-dialog="closeEdit">
+    <Dialog v-if="edit" @close-dialog="closeEdit">
       <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
     </Dialog>
-    <Dialog :open="create" @close-dialog="create = false">
+    <Dialog v-if="create" @close-dialog="create = false">
       <CreateNote @created="onNoteCreated" />
     </Dialog>
   </div>
@@ -101,6 +102,12 @@ export default {
   position: absolute;
   top: 10px;
   right: 10px;
+  cursor: pointer;
+}
+.dialog-link-icon {
+  position: absolute;
+  top: 10px;
+  right: 40px;
   cursor: pointer;
 }
 </style>
