@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'NavBar',
+  name: "NavBar",
 };
 </script>
 
@@ -18,10 +18,10 @@ export default {
 .navbar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 10px;
   background-color: #f8f8f8;
   height: 50px;
+  align-content: center;
 }
 
 .navbar-brand {

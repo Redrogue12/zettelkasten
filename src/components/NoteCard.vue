@@ -1,5 +1,5 @@
 <template>
-  <div class="note-card" @click="openDialog">
+  <div class="note-card" @click.stop="handleClick">
     <h2>{{ note.note_title }}</h2>
     <p>{{ note.note_text }}</p>
   </div>
@@ -14,9 +14,10 @@ export default {
       required: true,
     },
   },
+  emits: ["click"],
   methods: {
-    openDialog() {
-      this.$emit("open-dialog", this.note);
+    handleClick() {
+      this.$emit("click", this.note);
     },
   },
 };
@@ -30,6 +31,7 @@ export default {
   padding: 10px;
   margin: 10px;
   width: 200px;
+  cursor: pointer;
 }
 
 .note-dates {

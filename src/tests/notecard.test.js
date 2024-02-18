@@ -4,8 +4,11 @@ import NoteCard from "@/components/NoteCard.vue";
 describe("NoteCard", () => {
   it("renders note title and text correctly", () => {
     const note = {
+      id: 1,
       note_title: "Test Note",
       note_text: "This is a test note",
+      date_created: "2021-01-01",
+      date_modified: "2021-01-01",
     };
     const wrapper = shallowMount(NoteCard, {
       propsData: {
@@ -17,10 +20,13 @@ describe("NoteCard", () => {
     expect(wrapper.find("p").text()).toBe(note.note_text);
   });
 
-  it('emits "open-dialog" event when clicked', () => {
+  it("when note is clicked, emit click event and pass correct value", () => {
     const note = {
+      id: 1,
       note_title: "Test Note",
       note_text: "This is a test note",
+      date_created: "2021-01-01",
+      date_modified: "2021-01-01",
     };
     const wrapper = shallowMount(NoteCard, {
       propsData: {
@@ -30,7 +36,7 @@ describe("NoteCard", () => {
 
     wrapper.trigger("click");
 
-    expect(wrapper.emitted("open-dialog")).toBeTruthy();
-    expect(wrapper.emitted("open-dialog")[0][0]).toStrictEqual(note);
+    expect(wrapper.emitted("click")).toBeTruthy();
+    expect(wrapper.emitted("click")[0][0]).toEqual(note);
   });
 });

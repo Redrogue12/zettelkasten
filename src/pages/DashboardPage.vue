@@ -1,35 +1,47 @@
 <template>
-  <div class="dashboard">
-    <NoteCard
-      v-for="note in notes"
-      :key="note.id"
-      :note="note"
-      @open-dialog="openDialog"
-    />
+  <div class="container">
+    <button class="btn btn-primary ml-3" @click.stop="create = true">
+      Create Note
+    </button>
 
-    <NoteDialog
-      v-if="selectedNote"
-      :selectedNote="selectedNote"
-      @close-dialog="closeDialog"
-      @edit-note="editNote"
-    />
+    <div class="dashboard">
+      <NoteCard
+        v-for="note in notes"
+        :key="note.id"
+        :note="note"
+        @click="editDialog(note)"
+      />
+    </div>
+
+    <Dialog :open="edit" @close-dialog="closeEdit">
+      <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
+    </Dialog>
+    <Dialog :open="create" @close-dialog="create = false">
+      <CreateNote @created="create = false" />
+    </Dialog>
   </div>
 </template>
 
 <script>
 import NoteCard from "../components/NoteCard.vue";
-import NoteDialog from "../components/NoteDialog.vue";
+import EditNote from "../components/EditNote.vue";
+import CreateNote from "../components/CreateNote.vue";
+import Dialog from "../components/Dialog.vue";
 
 export default {
+  name: "DashboardPage",
   components: {
     NoteCard,
-    NoteDialog,
+    EditNote,
+    CreateNote,
+    Dialog,
   },
   data() {
     return {
-      name: "DashboardPage",
       notes: [],
       selectedNote: null,
+      edit: false,
+      create: false,
     };
   },
   async created() {
@@ -41,44 +53,13 @@ export default {
     }
   },
   methods: {
-    openDialog(note) {
+    editDialog(note) {
       this.selectedNote = { ...note };
+      this.edit = true;
     },
-    closeDialog() {
+    closeEdit() {
       this.selectedNote = null;
-    },
-    async editNote() {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/notes/${this.selectedNote.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              note_title: this.selectedNote.note_title,
-              note_text: this.selectedNote.note_text,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to update note");
-        } else console.log("Note updated successfully");
-
-        const updatedNote = await response.json();
-
-        // Update the note in the notes array
-        const index = this.notes.findIndex(
-          (note) => note.id === updatedNote.id
-        );
-        this.notes.splice(index, 1, updatedNote);
-
-        this.closeDialog();
-      } catch (error) {
-        console.error(error);
-      }
+      this.edit = false;
     },
   },
 };
@@ -88,6 +69,5 @@ export default {
 .dashboard {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
 }
 </style>
