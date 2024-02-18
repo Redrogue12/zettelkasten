@@ -1,7 +1,7 @@
 <template>
   <div class="note-card" @click.stop="handleClick">
     <h2>{{ note.note_title }}</h2>
-    <p>{{ note.note_text }}</p>
+    <p>{{ truncatedNoteText }}</p>
   </div>
 </template>
 
@@ -15,6 +15,13 @@ export default {
     },
   },
   emits: ["click"],
+  computed: {
+    truncatedNoteText() {
+      return this.note.note_text.length > 60
+        ? this.note.note_text.substring(0, 60) + "..."
+        : this.note.note_text;
+    },
+  },
   methods: {
     handleClick() {
       this.$emit("click", this.note);
