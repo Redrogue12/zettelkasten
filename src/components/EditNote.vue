@@ -77,13 +77,7 @@ export default {
           throw new Error("Failed to update note");
         } else console.log("Note updated successfully");
 
-        const updatedNote = await response.json();
-
-        // Update the note in the notes array
-        const index = this.notes.findIndex(
-          (note) => note.id === updatedNote.id
-        );
-        this.notes.splice(index, 1, updatedNote);
+        await response.json();
 
         this.edited();
       } catch (error) {

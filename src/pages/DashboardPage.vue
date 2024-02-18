@@ -63,6 +63,7 @@ export default {
     closeEdit() {
       this.selectedNote = null;
       this.edit = false;
+      this.fetchNotes();
     },
     onNoteCreated() {
       this.create = false;
