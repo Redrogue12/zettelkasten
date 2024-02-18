@@ -1,6 +1,6 @@
 <template>
   <div class="note-card" @click.stop="handleClick">
-    <h2>{{ note.note_title }}</h2>
+    <h5>{{ truncatedNoteTitle }}</h5>
     <p>{{ truncatedNoteText }}</p>
   </div>
 </template>
@@ -17,9 +17,14 @@ export default {
   emits: ["click"],
   computed: {
     truncatedNoteText() {
-      return this.note.note_text.length > 60
-        ? this.note.note_text.substring(0, 60) + "..."
+      return this.note.note_text.length > 88
+        ? this.note.note_text.substring(0, 88) + "..."
         : this.note.note_text;
+    },
+    truncatedNoteTitle() {
+      return this.note.note_title.length > 23
+        ? this.note.note_title.substring(0, 23) + "..."
+        : this.note.note_title;
     },
   },
   methods: {
@@ -37,7 +42,8 @@ export default {
   border-radius: 4px;
   padding: 10px;
   margin: 10px;
-  width: 200px;
+  width: 250px;
+  height: 125px;
   cursor: pointer;
 }
 

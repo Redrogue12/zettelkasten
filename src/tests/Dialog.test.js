@@ -18,7 +18,7 @@ describe("Dialog", () => {
         open: true,
       },
     });
-    wrapper.find("button").trigger("click");
+    wrapper.find(".close-icon").trigger("click");
 
     expect(wrapper.emitted("close-dialog")).toBeTruthy();
   });

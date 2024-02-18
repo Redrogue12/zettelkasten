@@ -1,17 +1,23 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import DashboardPage from './pages/DashboardPage.vue';
-import TagsPage from './pages/TagsPage.vue';
+import { createRouter, createWebHistory } from "vue-router";
+import DashboardPage from "./pages/DashboardPage.vue";
+import TagsPage from "./pages/TagsPage.vue";
+import LinksPage from "./pages/LinksPage.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'dashboard',
+    path: "/",
+    name: "dashboard",
     component: DashboardPage,
   },
   {
-    path: '/tags',
-    name: 'tags',
+    path: "/tags",
+    name: "tags",
     component: TagsPage,
+  },
+  {
+    path: "/links/:id",
+    name: "links",
+    component: LinksPage,
   },
 ];
 

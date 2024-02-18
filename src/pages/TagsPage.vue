@@ -1,5 +1,5 @@
 <template>
-  <div class="tag-creation-page">
+  <div class="container">
     <div>
       <h1>Tags</h1>
       <ul>
@@ -20,19 +20,19 @@
 
 <script>
 export default {
-  name: 'TagCreationPage',
+  name: "TagCreationPage",
   data() {
     return {
       tags: [],
-      tagName: '',
+      tagName: "",
     };
   },
   async created() {
     try {
-      const response = await fetch('http://localhost:3000/tags');
+      const response = await fetch("http://localhost:3000/tags");
 
       if (!response.ok) {
-        throw new Error('Failed to fetch tags');
+        throw new Error("Failed to fetch tags");
       }
 
       this.tags = await response.json();
@@ -43,10 +43,10 @@ export default {
   methods: {
     async createTag() {
       try {
-        const response = await fetch('http://localhost:3000/tags', {
-          method: 'POST',
+        const response = await fetch("http://localhost:3000/tags", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             tag_name: this.tagName,
@@ -54,14 +54,14 @@ export default {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to create tag');
+          throw new Error("Failed to create tag");
         }
 
         const newTag = await response.json();
 
         this.tags.push(newTag);
-        this.tagName = '';
-        alert('Tag created successfully!');
+        this.tagName = "";
+        alert("Tag created successfully!");
       } catch (error) {
         console.error(error);
       }
@@ -71,12 +71,6 @@ export default {
 </script>
 
 <style scoped>
-.tag-creation-page {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
 form {
   display: flex;
   flex-direction: column;

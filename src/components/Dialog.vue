@@ -1,7 +1,11 @@
 <template>
   <div ref="dialog" class="dialog">
     <slot />
-    <button @click.stop="closeDialog">Close</button>
+    <font-awesome-icon
+      icon="times"
+      class="close-icon fa-lg"
+      @click.stop="closeDialog"
+    />
   </div>
 </template>
 
@@ -39,5 +43,11 @@ export default {
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
+}
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
 }
 </style>

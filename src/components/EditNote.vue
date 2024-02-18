@@ -1,13 +1,23 @@
 <template>
   <h2>Edit Note</h2>
   <div class="form-group">
-    <label>
+    <label class="mb-3">
       <span>Title:</span>
-      <input ref="titleInput" v-model="localNote.note_title" />
+      <input
+        class="form-control"
+        ref="titleInput"
+        v-model="localNote.note_title"
+      />
     </label>
-    <label>
+    <label class="mb-3">
       <span>Note:</span>
-      <textarea ref="textInput" v-model="localNote.note_text" />
+      <textarea
+        class="form-control"
+        cols="50"
+        rows="10"
+        ref="textInput"
+        v-model="localNote.note_text"
+      />
     </label>
   </div>
   <p class="note-dates">
@@ -15,7 +25,14 @@
     <br />
     Modified: {{ new Date(selectedNote.date_modified).toLocaleDateString() }}
   </p>
-  <button id="edit-submit-button" @click.stop="editNote">Submit</button>
+  <button
+    class="btn btn-success"
+    style="width: 100px; align-self: center"
+    id="edit-submit-button"
+    @click.stop="editNote"
+  >
+    Submit
+  </button>
 </template>
 
 <script>

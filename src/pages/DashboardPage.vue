@@ -1,8 +1,10 @@
 <template>
   <div class="container">
-    <button class="btn btn-primary ml-3" @click.stop="create = true">
-      Create Note
-    </button>
+    <font-awesome-icon
+      class="m-3 mb-1 pointer fa-xl"
+      icon="plus"
+      @click.stop="create = true"
+    />
 
     <div class="dashboard">
       <NoteCard
@@ -14,14 +16,11 @@
     </div>
 
     <Dialog v-if="view" @close-dialog="view = false">
-      <font-awesome-icon
-        class="dialog-edit-icon"
-        icon="edit"
-        @click.stop="editDialog(selectedNote)"
+      <ViewNote
+        :note="selectedNote"
+        @edit-dialog="editDialog"
+        @deleted="deleted"
       />
-      <font-awesome-icon class="dialog-link-icon" icon="link" />
-      <h3>{{ selectedNote?.note_title }}</h3>
-      <p>{{ selectedNote?.note_text }}</p>
     </Dialog>
 
     <Dialog v-if="edit" @close-dialog="closeEdit">
@@ -37,6 +36,7 @@
 import NoteCard from "../components/NoteCard.vue";
 import EditNote from "../components/EditNote.vue";
 import CreateNote from "../components/CreateNote.vue";
+import ViewNote from "../components/ViewNote.vue";
 import Dialog from "../components/Dialog.vue";
 
 export default {
@@ -45,6 +45,7 @@ export default {
     NoteCard,
     EditNote,
     CreateNote,
+    ViewNote,
     Dialog,
   },
   data() {
@@ -85,6 +86,10 @@ export default {
       this.edit = false;
       this.fetchNotes();
     },
+    deleted() {
+      this.view = false;
+      this.fetchNotes();
+    },
     onNoteCreated() {
       this.create = false;
       this.fetchNotes();
@@ -97,17 +102,5 @@ export default {
 .dashboard {
   display: flex;
   flex-wrap: wrap;
-}
-.dialog-edit-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-}
-.dialog-link-icon {
-  position: absolute;
-  top: 10px;
-  right: 40px;
-  cursor: pointer;
 }
 </style>

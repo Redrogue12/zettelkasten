@@ -16,7 +16,7 @@ describe("NoteCard", () => {
       },
     });
 
-    expect(wrapper.find("h2").text()).toBe(note.note_title);
+    expect(wrapper.find("h5").text()).toBe(note.note_title);
     expect(wrapper.find("p").text()).toBe(note.note_text);
   });
 
