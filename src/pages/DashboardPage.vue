@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="error">
+    <h3>Failed to fetch notes</h3>
+  </div>
+  <div v-else class="container">
     <font-awesome-icon
       class="m-3 mb-1 pointer fa-xl"
       icon="plus"
@@ -19,7 +22,7 @@
       <ViewNote
         :note="selectedNote"
         @edit-dialog="editDialog"
-        @deleted="deleted"
+        @deleted="toggleDelete"
       />
     </Dialog>
 
@@ -29,6 +32,11 @@
     <Dialog v-if="create" @close-dialog="create = false">
       <CreateNote @created="onNoteCreated" />
     </Dialog>
+
+    <!-- eslint-disable -->
+    <Dialog v-if="delete" @close-dialog="deleted">
+      <DeleteNote :note="selectedNote" @deleted="deleted" />
+    </Dialog>
   </div>
 </template>
 
@@ -37,6 +45,7 @@ import NoteCard from "../components/NoteCard.vue";
 import EditNote from "../components/EditNote.vue";
 import CreateNote from "../components/CreateNote.vue";
 import ViewNote from "../components/ViewNote.vue";
+import DeleteNote from "../components/DeleteNote.vue";
 import Dialog from "../components/Dialog.vue";
 
 export default {
@@ -46,15 +55,18 @@ export default {
     EditNote,
     CreateNote,
     ViewNote,
+    DeleteNote,
     Dialog,
   },
   data() {
     return {
+      error: false,
       notes: [],
       selectedNote: null,
       edit: false,
       create: false,
       view: false,
+      delete: false,
     };
   },
   async created() {
@@ -64,9 +76,13 @@ export default {
     async fetchNotes() {
       try {
         const response = await fetch("http://localhost:3000/notes");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         this.notes = await response.json();
       } catch (error) {
         console.error("Failed to fetch notes");
+        this.error = true;
       }
     },
     viewNote(note) {
@@ -86,8 +102,13 @@ export default {
       this.edit = false;
       this.fetchNotes();
     },
+    toggleDelete() {
+      this.delete = !this.delete;
+    },
     deleted() {
+      this.delete = false;
       this.view = false;
+      this.selectedNote = null;
       this.fetchNotes();
     },
     onNoteCreated() {

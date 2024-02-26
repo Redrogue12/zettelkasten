@@ -1,5 +1,8 @@
 <template>
-  <div class="container">
+  <div v-if="error" class="container">
+    <h3>Error fetching tags</h3>
+  </div>
+  <div class="container" v-else>
     <div>
       <h1>Tags</h1>
       <ul>
@@ -23,6 +26,7 @@ export default {
   name: "TagCreationPage",
   data() {
     return {
+      error: false,
       tags: [],
       tagName: "",
     };
@@ -38,6 +42,7 @@ export default {
       this.tags = await response.json();
     } catch (error) {
       console.error(error);
+      this.error = true;
     }
   },
   methods: {
