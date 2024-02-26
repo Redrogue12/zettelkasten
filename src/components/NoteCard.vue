@@ -17,12 +17,12 @@ export default {
   emits: ["click"],
   computed: {
     truncatedNoteText() {
-      return this.note.note_text.length > 88
+      return this.note.note_text?.length > 88
         ? this.note.note_text.substring(0, 88) + "..."
         : this.note.note_text;
     },
     truncatedNoteTitle() {
-      return this.note.note_title.length > 23
+      return this.note.note_title?.length > 23
         ? this.note.note_title.substring(0, 23) + "..."
         : this.note.note_title;
     },
