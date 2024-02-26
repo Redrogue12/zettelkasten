@@ -38,7 +38,7 @@
 
 <script>
 import axios from "axios";
-import NoteCard from "../components/NoteCard.vue";
+import { NoteCard } from "../components/Notes";
 
 export default {
   name: "LinksPage",

@@ -2,7 +2,7 @@
   <div class="container" v-if="error">
     <h3>Failed to fetch notes</h3>
   </div>
-  <div v-else class="container">
+  <div class="container" v-else>
     <font-awesome-icon
       class="m-3 mb-1 pointer fa-xl"
       icon="plus"
@@ -41,11 +41,13 @@
 </template>
 
 <script>
-import NoteCard from "../components/NoteCard.vue";
-import EditNote from "../components/EditNote.vue";
-import CreateNote from "../components/CreateNote.vue";
-import ViewNote from "../components/ViewNote.vue";
-import DeleteNote from "../components/DeleteNote.vue";
+import {
+  NoteCard,
+  EditNote,
+  CreateNote,
+  ViewNote,
+  DeleteNote,
+} from "../components/Notes";
 import Dialog from "../components/Dialog.vue";
 
 export default {
