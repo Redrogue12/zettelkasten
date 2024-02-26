@@ -46,7 +46,7 @@
 
 <script>
 import { TagPill, CreateTag, DeleteTag, EditTag } from "@/components/Tags";
-import Dialog from "@/components/Dialog.vue";
+import Dialog from "@/components/Dialog";
 export default {
   name: "TagsPage",
   components: {
