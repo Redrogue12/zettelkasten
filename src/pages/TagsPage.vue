@@ -1,34 +1,69 @@
 <template>
-  <div v-if="error" class="container">
+  <div class="container" v-if="error">
     <h3>Error fetching tags</h3>
   </div>
   <div class="container" v-else>
+    <font-awesome-icon
+      class="m-3 mb-1 pointer fa-xl"
+      icon="plus"
+      @click.stop="create = true"
+    />
     <div>
-      <h1>Tags</h1>
-      <ul>
-        <li v-for="tag in tags" :key="tag.id">{{ tag.tag_name }}</li>
-      </ul>
+      <div v-if="tags.length === 0">
+        <h3>No tags found</h3>
+      </div>
+      <div class="d-flex" v-else>
+        <tag-pill
+          v-for="(tag, i) in tags"
+          :key="tag.tag_id"
+          :tag="tag"
+          @click.stop="
+            selectedTag = { ...tag, index: i };
+            edit = true;
+          "
+        />
+      </div>
     </div>
-
-    <h1>Create a Tag</h1>
-
-    <form @submit.prevent="createTag">
-      <label for="tagName">Tag Name:</label>
-      <input id="tagName" v-model="tagName" required />
-
-      <button type="submit">Create Tag</button>
-    </form>
+    <Dialog v-if="create" @close-dialog="create = false">
+      <CreateTag />
+    </Dialog>
+    <Dialog v-if="edit" @close-dialog="edit = false">
+      <EditTag
+        :tag="selectedTag"
+        @edited="
+          edit = false;
+          this.tags[selectedTag.index] = $event;
+          selectedTag = null;
+        "
+      />
+    </Dialog>
+    <!-- eslint-disable -->
+    <Dialog v-if="deleteTag" @close-dialog="deleteTag = false">
+      <DeleteTag :tag="selectedTag" />
+    </Dialog>
   </div>
 </template>
 
 <script>
+import { TagPill, CreateTag, DeleteTag, EditTag } from "@/components/Tags";
+import Dialog from "@/components/Dialog.vue";
 export default {
-  name: "TagCreationPage",
+  name: "TagsPage",
+  components: {
+    TagPill,
+    CreateTag,
+    DeleteTag,
+    EditTag,
+    Dialog,
+  },
   data() {
     return {
       error: false,
+      create: false,
+      edit: false,
+      deleteTag: false,
+      selectedTag: null,
       tags: [],
-      tagName: "",
     };
   },
   async created() {
@@ -36,6 +71,7 @@ export default {
       const response = await fetch("http://localhost:3000/tags");
 
       if (!response.ok) {
+        this.error = true;
         throw new Error("Failed to fetch tags");
       }
 
@@ -45,40 +81,5 @@ export default {
       this.error = true;
     }
   },
-  methods: {
-    async createTag() {
-      try {
-        const response = await fetch("http://localhost:3000/tags", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tag_name: this.tagName,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to create tag");
-        }
-
-        const newTag = await response.json();
-
-        this.tags.push(newTag);
-        this.tagName = "";
-        alert("Tag created successfully!");
-      } catch (error) {
-        console.error(error);
-      }
-    },
-  },
 };
 </script>
-
-<style scoped>
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-</style>
