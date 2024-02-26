@@ -18,7 +18,7 @@
     <font-awesome-icon
       class="dialog-edit-icon fa-lg pointer"
       icon="trash"
-      @click.stop="deleteNote"
+      @click.stop="$emit('deleted')"
     />
   </div>
   <hr />
@@ -51,14 +51,6 @@ export default {
   methods: {
     editDialog() {
       this.$emit("edit-dialog", this.note);
-    },
-    async deleteNote() {
-      try {
-        await axios.delete(`http://localhost:3000/notes/${this.note.id}`);
-        this.$emit("deleted");
-      } catch (error) {
-        console.error(error);
-      }
     },
     async fetchRelatedNotes() {
       const id = this.note.id;
