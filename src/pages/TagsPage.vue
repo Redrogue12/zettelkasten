@@ -3,11 +3,14 @@
     <h3>Error fetching tags</h3>
   </div>
   <div class="container" v-else>
-    <font-awesome-icon
-      class="m-3 mb-1 pointer fa-xl"
-      icon="plus"
-      @click.stop="create = true"
-    />
+    <div class="d-flex align-items-baseline">
+      <h1 class="m-3">Tags</h1>
+      <font-awesome-icon
+        class="pointer fa-xl"
+        icon="plus"
+        @click.stop="create = true"
+      />
+    </div>
     <div>
       <div v-if="tags.length === 0">
         <h3>No tags found</h3>

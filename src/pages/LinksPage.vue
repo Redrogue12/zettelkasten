@@ -6,6 +6,11 @@
       <p>{{ note?.note_text }}</p>
     </div>
     <hr />
+    <h5>Tags</h5>
+    <div class="d-flex">
+      <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" />
+    </div>
+    <hr />
     <div>
       <h5>Related Notes</h5>
       <div class="d-flex flex-wrap">
@@ -39,11 +44,13 @@
 <script>
 import axios from "axios";
 import { NoteCard } from "../components/Notes";
+import TagPill from "../components/Tags/TagPill.vue";
 
 export default {
   name: "LinksPage",
   components: {
     NoteCard,
+    TagPill,
   },
   data() {
     return {
@@ -58,7 +65,7 @@ export default {
       return this.notes.filter((n) =>
         // n.id !== this.note.id ||
         // this.relatedNotes.find((rn) => rn.id !== n.id) ||
-        n.note_title.toLowerCase().includes(this.search.toLowerCase())
+        n.note_title?.toLowerCase().includes(this.search.toLowerCase())
       );
     },
   },

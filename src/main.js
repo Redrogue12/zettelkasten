@@ -9,10 +9,11 @@ import {
   faTimes,
   faPlus,
   faTrash,
+  faTags,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faEdit, faLink, faTimes, faPlus, faTrash);
+library.add(faEdit, faLink, faTimes, faPlus, faTrash, faTags);
 
 const app = createApp(App);
 app.component("font-awesome-icon", FontAwesomeIcon);

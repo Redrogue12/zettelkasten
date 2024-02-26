@@ -3,11 +3,14 @@
     <h3>Failed to fetch notes</h3>
   </div>
   <div class="container" v-else>
-    <font-awesome-icon
-      class="m-3 mb-1 pointer fa-xl"
-      icon="plus"
-      @click.stop="create = true"
-    />
+    <div class="d-flex align-items-baseline">
+      <h1 class="m-3">Notes</h1>
+      <font-awesome-icon
+        class="pointer fa-xl"
+        icon="plus"
+        @click.stop="create = true"
+      />
+    </div>
 
     <div class="notes-container">
       <NoteCard
