@@ -36,7 +36,7 @@
   }}</router-link>
 
   <Dialog v-if="tag" @close-dialog="tag = false">
-    <NoteTags :note="note" />
+    <NoteTags :note="note" @tag-linked="tag = false" />
   </Dialog>
 </template>
 
@@ -72,7 +72,6 @@ export default {
   methods: {
     clickTag() {
       this.tag = true;
-      console.log("clicked tag");
     },
     editDialog() {
       this.$emit("edit-dialog", this.note);

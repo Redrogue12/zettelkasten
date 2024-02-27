@@ -15,7 +15,7 @@
       <div v-if="tags.length === 0">
         <h3>No tags found</h3>
       </div>
-      <div class="d-flex" v-else>
+      <div class="d-flex flex-wrap" v-else>
         <tag-pill
           v-for="(tag, i) in tags"
           :key="tag.tag_id"
@@ -28,7 +28,7 @@
       </div>
     </div>
     <Dialog v-if="create" @close-dialog="create = false">
-      <CreateTag />
+      <CreateTag @created="onTagCreated" />
     </Dialog>
     <Dialog v-if="edit" @close-dialog="edit = false">
       <EditTag
@@ -83,6 +83,12 @@ export default {
       console.error(error);
       this.error = true;
     }
+  },
+  methods: {
+    onTagCreated(tag) {
+      this.tags.push(tag);
+      this.create = false;
+    },
   },
 };
 </script>

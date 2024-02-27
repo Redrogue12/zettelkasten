@@ -2,9 +2,21 @@
   <h3>Create a Tag</h3>
   <form @submit.prevent="createTag">
     <label for="tagName">Tag Name:</label>
-    <input id="tagName" class="form-control" v-model="tagName" required />
+    <input
+      id="tagName"
+      ref="tagNameInput"
+      class="form-control"
+      v-model="tagName"
+      required
+    />
 
-    <button class="btn btn-success" type="submit">Create Tag</button>
+    <button
+      class="btn btn-success"
+      style="width: 120px; align-self: center"
+      type="submit"
+    >
+      Create Tag
+    </button>
   </form>
 </template>
 
@@ -15,6 +27,13 @@ export default {
     return {
       tagName: "",
     };
+  },
+  emits: ["created"],
+  mounted() {
+    if (this.$refs.tagNameInput) {
+      this.$refs.tagNameInput.focus();
+      this.localTag = { ...this.tag };
+    }
   },
   methods: {
     async createTag() {
@@ -35,7 +54,7 @@ export default {
 
         const newTag = await response.json();
 
-        this.tags.push(newTag);
+        this.$emit("created", newTag);
         this.tagName = "";
         alert("Tag created successfully!");
       } catch (error) {

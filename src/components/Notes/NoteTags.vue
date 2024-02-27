@@ -1,21 +1,25 @@
 <template>
-  <div>
+  <div v-if="error">
+    <h2>Failed to fetch tags</h2>
+  </div>
+  <div v-else>
     <h2>Tags</h2>
     <div class="form-group">
       <input
         ref="tagSearchInput"
         class="form-control"
         type="text"
+        placeholder="Search tags..."
         v-model="tagSearch"
       />
     </div>
     <hr />
-    <div>
+    <div class="note-tags-tags-container">
       <TagPill
         v-for="tag in filteredTags"
         :key="tag.tag_id"
         :tag="tag"
-        @click.stop="connectTag(tag.tag_id)"
+        @click.stop="connectTag(tag)"
       />
     </div>
   </div>
@@ -31,6 +35,7 @@ export default {
   },
   data() {
     return {
+      error: false,
       tags: [],
       tagSearch: "",
     };
@@ -48,10 +53,15 @@ export default {
     this.fetchTags();
   },
   computed: {
+    tagIds() {
+      return this.note?.tags.map((tag) => tag.tag_id) || [];
+    },
     filteredTags() {
-      return this.tags.filter((tag) =>
-        tag.tag_name.toLowerCase().includes(this.tagSearch.toLowerCase())
-      );
+      return this.tags
+        .filter((tag) =>
+          tag.tag_name.toLowerCase().includes(this.tagSearch.toLowerCase())
+        )
+        .filter((tag) => !this.tagIds.includes(tag.tag_id));
     },
   },
   methods: {
@@ -68,9 +78,11 @@ export default {
       } catch (error) {
         console.error(error);
         this.error = true;
+        throw new Error("Failed to fetch tags");
       }
     },
-    async connectTag(tag_id) {
+    async connectTag(tag) {
+      const { tag_id } = tag;
       const note_id = this.note.id;
       try {
         const response = await axios.post(`http://localhost:3000/tags/link`, {
@@ -80,8 +92,10 @@ export default {
 
         if (response.status === 201) {
           console.log("Tag linked successfully");
+          this.$emit("tag-linked", tag);
         } else {
           console.log("Failed to link tag");
+          throw new Error("Failed to link tag");
         }
       } catch (error) {
         console.error(error);
@@ -90,3 +104,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  gap: 5px;
+}
+</style>

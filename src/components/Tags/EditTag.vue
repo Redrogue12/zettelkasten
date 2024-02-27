@@ -1,23 +1,22 @@
 <template>
   <h3>Edit Tag</h3>
-  <div class="form-group d-flex flex-column">
-    <label class="mb-3">
-      <span>Tag Name:</span>
-      <input
-        class="form-control"
-        ref="tagNameInput"
-        v-model="localTag.tag_name"
-      />
-    </label>
+  <form @submit.prevent="editTag">
+    <label for="editTagName">Tag Name:</label>
+    <input
+      class="form-control mb-3"
+      ref="tagNameInput"
+      id="ediTagName"
+      v-model="localTag.tag_name"
+    />
     <button
       class="btn btn-success"
       style="width: 120px; align-self: center"
       id="edit-submit-button"
-      @click.stop="editTag"
+      type="submit"
     >
       Submit
     </button>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -71,3 +70,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+</style>

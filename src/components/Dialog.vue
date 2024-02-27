@@ -43,6 +43,9 @@ export default {
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;
+  min-width: 350px;
+  min-height: 250px;
+  justify-content: space-between;
 }
 .close-icon {
   position: absolute;

@@ -129,4 +129,10 @@ export default {
   display: flex;
   flex-wrap: wrap;
 }
+
+@media (max-width: 499px) {
+  .notes-container {
+    justify-content: center;
+  }
+}
 </style>
