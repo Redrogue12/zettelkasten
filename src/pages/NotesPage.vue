@@ -52,6 +52,9 @@ import {
   DeleteNote,
 } from "../components/Notes";
 import Dialog from "../components/Dialog";
+import { useNotesStore as notesStore } from "../../src/stores/notesStore";
+
+import { mapState, mapActions } from "pinia";
 
 export default {
   name: "NotesPage",
@@ -65,8 +68,6 @@ export default {
   },
   data() {
     return {
-      error: false,
-      notes: [],
       selectedNote: null,
       edit: false,
       create: false,
@@ -77,19 +78,11 @@ export default {
   async created() {
     this.fetchNotes();
   },
+  computed: {
+    ...mapState(notesStore, { notes: "getNotes", error: "getError" }),
+  },
   methods: {
-    async fetchNotes() {
-      try {
-        const response = await fetch("http://localhost:3000/notes");
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        this.notes = await response.json();
-      } catch (error) {
-        console.error("Failed to fetch notes");
-        this.error = true;
-      }
-    },
+    ...mapActions(notesStore, ["fetchNotes"]),
     viewNote(note) {
       this.setNote(note);
       this.view = true;
@@ -105,7 +98,6 @@ export default {
     closeEdit() {
       this.selectedNote = null;
       this.edit = false;
-      this.fetchNotes();
     },
     toggleDelete() {
       this.delete = !this.delete;
@@ -114,11 +106,9 @@ export default {
       this.delete = false;
       this.view = false;
       this.selectedNote = null;
-      this.fetchNotes();
     },
     onNoteCreated() {
       this.create = false;
-      this.fetchNotes();
     },
   },
 };

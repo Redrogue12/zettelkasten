@@ -1,14 +1,11 @@
 <template>
   <div class="container">
-    <h1>Links</h1>
     <div>
-      <h5>{{ note?.note_title }}</h5>
+      <h1>{{ note?.note_title }}</h1>
+      <div class="d-flex">
+        <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" />
+      </div>
       <p>{{ note?.note_text }}</p>
-    </div>
-    <hr />
-    <h5>Tags</h5>
-    <div class="d-flex">
-      <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" />
     </div>
     <hr />
     <div>
@@ -18,7 +15,7 @@
           v-for="n in relatedNotes"
           :key="n.id"
           :note="n"
-          @click="unlinkNotes(n.id)"
+          @click="unlinkNotes(note.id, n.id)"
         />
       </div>
     </div>
@@ -35,16 +32,17 @@
         v-for="n in filteredNotes"
         :key="n.id"
         :note="n"
-        @click="linkNotes(n.id)"
+        @click="linkNotes(note.id, n.id)"
       />
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import { NoteCard } from "../components/Notes";
 import TagPill from "../components/Tags/TagPill.vue";
+import { useNotesStore as notesStore } from "../stores/notesStore";
+import { mapState, mapActions } from "pinia";
 
 export default {
   name: "LinksPage",
@@ -54,90 +52,40 @@ export default {
   },
   data() {
     return {
-      notes: [],
-      note: null,
-      relatedNotes: [],
       search: "",
+      note: null,
     };
   },
   computed: {
+    ...mapState(notesStore, ["relatedNotes", "notes"]),
     filteredNotes() {
-      return this.notes.filter((n) =>
-        // n.id !== this.note.id ||
-        // this.relatedNotes.find((rn) => rn.id !== n.id) ||
-        n.note_title?.toLowerCase().includes(this.search.toLowerCase())
+      const { id } = this.$route.params;
+      return this.notes.filter(
+        (n) =>
+          n.id !== id &&
+          !this.relatedNotes.some((rn) => rn.id === n.id) &&
+          n.note_title?.toLowerCase().includes(this.search.toLowerCase())
       );
     },
   },
   async created() {
     try {
-      this.fetchNotes();
-      this.fetchRelatedNotes();
+      const { id } = this.$route.params;
+      await this.fetchNotes();
+      this.note = this.getNote(id);
+      await this.fetchRelatedNotes(id);
     } catch (error) {
       console.error(error);
     }
   },
   methods: {
-    async fetchNotes() {
-      const id = this.$route.params.id;
-      const response = await axios.get(`http://localhost:3000/notes`);
-      this.note = response.data.find((note) => note.id === id);
-      this.notes = response.data.filter((note) => note.id !== id);
-    },
-    async linkNotes(id2) {
-      const id1 = this.note.id;
-      try {
-        const response = await axios.post(`http://localhost:3000/links`, {
-          id1,
-          id2,
-        });
-
-        if (response.status === 201) {
-          console.log("Notes linked successfully");
-          this.fetchNotes();
-          this.fetchRelatedNotes();
-        } else {
-          console.log("Failed to link notes");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async unlinkNotes(id2) {
-      const id1 = this.note.id;
-      try {
-        const response = await axios.delete(`http://localhost:3000/links`, {
-          params: {
-            id1: id1,
-            id2: id2,
-          },
-        });
-
-        if (response.status === 204) {
-          console.log("Notes unlinked successfully");
-          this.fetchNotes();
-          this.fetchRelatedNotes();
-        } else {
-          console.log("Failed to link notes");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async fetchRelatedNotes() {
-      const id = this.$route.params.id;
-      try {
-        const response = await axios.get(`http://localhost:3000/links/${id}`);
-
-        if (response.status === 200) {
-          this.relatedNotes = response.data;
-        } else {
-          console.log("Failed to fetch related notes");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    ...mapActions(notesStore, [
+      "fetchRelatedNotes",
+      "fetchNotes",
+      "getNote",
+      "linkNotes",
+      "unlinkNotes",
+    ]),
   },
 };
 </script>

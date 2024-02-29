@@ -41,10 +41,12 @@
 </template>
 
 <script>
-import axios from "axios";
 import NoteTags from "./NoteTags";
 import TagPill from "../Tags/TagPill.vue";
 import Dialog from "../Dialog";
+import { useNotesStore as notesStore } from "../../stores/notesStore";
+
+import { mapState, mapActions } from "pinia";
 
 export default {
   name: "ViewNote",
@@ -61,34 +63,23 @@ export default {
   },
   data() {
     return {
-      relatedNotes: [],
       tag: false,
     };
   },
   emits: ["click", "edit-dialog", "deleted"],
   mounted() {
-    this.fetchRelatedNotes();
+    this.fetchRelatedNotes(this.note.id);
+  },
+  computed: {
+    ...mapState(notesStore, ["relatedNotes"]),
   },
   methods: {
+    ...mapActions(notesStore, ["fetchRelatedNotes"]),
     clickTag() {
       this.tag = true;
     },
     editDialog() {
       this.$emit("edit-dialog", this.note);
-    },
-    async fetchRelatedNotes() {
-      const id = this.note.id;
-      try {
-        const response = await axios.get(`http://localhost:3000/links/${id}`);
-
-        if (response.status === 200) {
-          this.relatedNotes = response.data;
-        } else {
-          console.log("Failed to fetch related notes");
-        }
-      } catch (error) {
-        console.error(error);
-      }
     },
   },
 };
