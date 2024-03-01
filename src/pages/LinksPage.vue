@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <h1>{{ note?.note_title }}</h1>
-      <div class="d-flex">
+      <div class="d-flex flex-wrap">
         <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" />
       </div>
       <p>{{ note?.note_text }}</p>
@@ -12,10 +12,10 @@
       <h5>Related Notes</h5>
       <div class="d-flex flex-wrap">
         <NoteCard
-          v-for="n in relatedNotes"
+          v-for="(n, i) in relatedNotes"
           :key="n.id"
           :note="n"
-          @click="unlinkNotes(note.id, n.id)"
+          @click="unlinkNotes(note.id, n.id, i)"
         />
       </div>
     </div>

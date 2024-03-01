@@ -19,10 +19,10 @@ export const useNotesStore = defineStore("notes", {
       this.notes.push(note);
     },
     pushLinkedNote(note) {
+      if (this.relatedNotes.find((n) => n.id === note.id)) return;
       this.relatedNotes.push(note);
     },
-    removeLinkedNote(note) {
-      const index = this.relatedNotes.indexOf((n) => n.id === note.id);
+    removeLinkedNote(index) {
       this.relatedNotes.splice(index, 1);
     },
     async fetchNotes() {
@@ -145,7 +145,7 @@ export const useNotesStore = defineStore("notes", {
         console.error(error);
       }
     },
-    async unlinkNotes(id1, id2) {
+    async unlinkNotes(id1, id2, index) {
       try {
         const response = await axios.delete(`http://localhost:3000/links`, {
           params: {
@@ -156,8 +156,7 @@ export const useNotesStore = defineStore("notes", {
 
         if (response.status === 204) {
           console.log("Notes unlinked successfully");
-          const unlinkedNote = this.getNote(id2);
-          this.removeLinkedNote(unlinkedNote);
+          this.removeLinkedNote(index);
         } else {
           console.log("Failed to link notes");
         }
