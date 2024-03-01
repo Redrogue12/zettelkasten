@@ -77,6 +77,22 @@ export const useTagsStore = defineStore("Tags", {
         console.error(error);
       }
     },
+    async deleteTag(id) {
+      if (!id) return console.error("No tag id provided");
+      try {
+        const response = await fetch(`http://localhost:3000/tags/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to delete tag");
+        } else console.log("Tag deleted successfully");
+
+        this.tags = this.tags.filter((t) => t.tag_id !== id);
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async connectTag(tag, note_id) {
       const { tag_id } = tag;
       try {

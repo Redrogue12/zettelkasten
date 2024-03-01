@@ -43,7 +43,7 @@
       />
     </Dialog>
     <Dialog :show="deleteTag" @close-dialog="deleteTag = false">
-      <DeleteTag :tag="selectedTag" />
+      <DeleteTag :tag="selectedTag" @deleted="onDelete" />
     </Dialog>
   </div>
 </template>
@@ -79,6 +79,11 @@ export default {
   },
   methods: {
     ...mapActions(tagsStore, ["fetchTags"]),
+    onDelete() {
+      this.deleteTag = false;
+      this.edit = false;
+      this.selectedTag = null;
+    },
   },
 };
 </script>

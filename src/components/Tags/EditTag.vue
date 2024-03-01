@@ -4,12 +4,18 @@
     <label class="w-100">
       <span>Title:</span>
       <input
-        class="form-control"
+        class="form-control mb-3"
         ref="tagNameInput"
         v-model="localTag.tag_name"
       />
     </label>
   </div>
+  <font-awesome-icon
+    class="delete-icon fa-lg pointer"
+    icon="trash"
+    @click.stop="$emit('delete')"
+  />
+  <hr />
 
   <button
     class="btn btn-success centered-btn"
@@ -31,7 +37,7 @@ export default {
       localTag: { tag_name: "" },
     };
   },
-  emits: ["edited"],
+  emits: ["edited", "delete"],
   props: {
     tag: {
       type: Object,
@@ -56,3 +62,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.delete-icon {
+  align-self: flex-end;
+}
+</style>
