@@ -31,9 +31,15 @@
   </div>
   <hr />
   <h5>Linked Notes</h5>
-  <router-link :to="`links/${rn.id}`" v-for="rn in relatedNotes" :key="rn.id">{{
-    rn.note_title
-  }}</router-link>
+  <div class="d-flex flex-wrap">
+    <router-link
+      class="mr-3 mb-3"
+      :to="`links/${rn.id}`"
+      v-for="rn in relatedNotes"
+      :key="rn.id"
+      >{{ rn.note_title }}</router-link
+    >
+  </div>
 
   <Dialog v-if="tag" @close-dialog="tag = false">
     <NoteTags :note="note" @tag-linked="tag = false" />

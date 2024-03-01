@@ -33,3 +33,25 @@ body {
 .form-group label span {
   width: 70px;
 }
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.note-card {
+  opacity: 0;
+  transition: transform 0.3s ease, scale 0.3s ease;
+  animation: dropIn 0.5s ease-out forwards;
+}
+
+.note-card:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+}

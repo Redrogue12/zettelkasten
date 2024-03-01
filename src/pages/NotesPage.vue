@@ -14,7 +14,8 @@
 
     <div class="notes-container">
       <NoteCard
-        v-for="note in notes"
+        v-for="(note, i) in notes"
+        :index="i"
         :key="note.id"
         :note="note"
         @click="viewNote(note)"

@@ -13,6 +13,7 @@
       <div class="d-flex flex-wrap">
         <NoteCard
           v-for="(n, i) in relatedNotes"
+          :index="i"
           :key="n.id"
           :note="n"
           @click="unlinkNotes(note.id, n.id, i)"
@@ -29,7 +30,8 @@
     />
     <div class="d-flex flex-wrap">
       <NoteCard
-        v-for="n in filteredNotes"
+        v-for="(n, i) in filteredNotes"
+        :index="i"
         :key="n.id"
         :note="n"
         @click="linkNotes(note.id, n.id)"

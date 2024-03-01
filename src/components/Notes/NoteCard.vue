@@ -1,5 +1,9 @@
 <template>
-  <div class="note-card" @click.stop="handleClick">
+  <div
+    :class="`note-card animation-delay-${index}`"
+    :style="{ animationDelay: `${index * 0.3}s` }"
+    @click.stop="handleClick"
+  >
     <h5>{{ truncatedNoteTitle }}</h5>
     <p>{{ truncatedNoteText }}</p>
   </div>
@@ -12,6 +16,11 @@ export default {
     note: {
       type: Object,
       required: true,
+    },
+    index: {
+      // index will help us stagger the animation
+      type: Number,
+      required: false,
     },
   },
   emits: ["click"],

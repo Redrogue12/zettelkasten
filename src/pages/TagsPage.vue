@@ -17,6 +17,8 @@
       </div>
       <div class="d-flex flex-wrap" v-else>
         <tag-pill
+          class="tag-pill"
+          :style="{ animationDelay: `${i * 0.1}s` }"
           v-for="(tag, i) in tags"
           :key="tag.tag_id"
           :tag="tag"
@@ -62,7 +64,6 @@ export default {
   },
   data() {
     return {
-      error: false,
       create: false,
       edit: false,
       deleteTag: false,
@@ -80,3 +81,16 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.tag-pill {
+  opacity: 0;
+  transition: transform 0.3s ease, scale 0.1s ease;
+  animation: dropIn 0.5s ease-out forwards;
+}
+
+.tag-pill:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+}
+</style>
