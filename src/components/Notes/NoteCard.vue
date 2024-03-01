@@ -1,7 +1,7 @@
 <template>
   <div
     :class="`note-card animation-delay-${index}`"
-    :style="{ animationDelay: `${index * 0.3}s` }"
+    :style="{ animationDelay: `${index * 0.2}s` }"
     @click.stop="handleClick"
   >
     <h5>{{ truncatedNoteTitle }}</h5>

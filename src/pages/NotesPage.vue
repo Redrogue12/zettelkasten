@@ -22,7 +22,7 @@
       />
     </div>
 
-    <Dialog v-if="view" @close-dialog="view = false">
+    <Dialog :show="view" @close-dialog="view = false">
       <ViewNote
         :note="selectedNote"
         @edit-dialog="editDialog"
@@ -30,15 +30,15 @@
       />
     </Dialog>
 
-    <Dialog v-if="edit" @close-dialog="closeEdit">
+    <Dialog :show="edit" @close-dialog="closeEdit">
       <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
     </Dialog>
-    <Dialog v-if="create" @close-dialog="create = false">
+    <Dialog :show="create" @close-dialog="create = false">
       <CreateNote @created="onNoteCreated" />
     </Dialog>
 
     <!-- eslint-disable -->
-    <Dialog v-if="delete" @close-dialog="deleted">
+    <Dialog :show="delete" @close-dialog="deleted">
       <DeleteNote :note="selectedNote" @deleted="deleted" />
     </Dialog>
   </div>

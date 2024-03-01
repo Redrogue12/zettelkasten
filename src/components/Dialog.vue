@@ -1,11 +1,13 @@
 <template>
-  <div ref="dialog" class="dialog">
-    <slot />
-    <font-awesome-icon
-      icon="times"
-      class="close-icon fa-lg"
-      @click.stop="closeDialog"
-    />
+  <div v-if="show" ref="dialog">
+    <div class="dialog">
+      <slot />
+      <font-awesome-icon
+        icon="times"
+        class="close-icon fa-lg"
+        @click.stop="closeDialog"
+      />
+    </div>
   </div>
 </template>
 
@@ -13,6 +15,12 @@
 export default {
   name: "Simple-Dialog",
   emits: ["close-dialog"],
+  props: {
+    show: {
+      type: Boolean,
+      required: true,
+    },
+  },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
   },
@@ -33,6 +41,16 @@ export default {
 </script>
 
 <style scoped>
+@keyframes fallIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 50px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
 .dialog {
   position: fixed;
   top: 50%;
@@ -46,7 +64,11 @@ export default {
   min-width: 350px;
   min-height: 250px;
   justify-content: space-between;
+
+  transition: transform 0.3s ease;
+  animation: fallIn 0.5s ease-out forwards;
 }
+
 .close-icon {
   position: absolute;
   top: 10px;

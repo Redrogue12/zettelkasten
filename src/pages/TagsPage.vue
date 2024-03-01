@@ -29,19 +29,20 @@
         />
       </div>
     </div>
-    <Dialog v-if="create" @close-dialog="create = false">
+    <Dialog :show="create" @close-dialog="create = false">
       <CreateTag @created="create = false" />
     </Dialog>
-    <Dialog v-if="edit" @close-dialog="edit = false">
+    <Dialog :show="edit" @close-dialog="edit = false">
       <EditTag
         :tag="selectedTag"
+        @delete="deleteTag = true"
         @edited="
           edit = false;
           selectedTag = null;
         "
       />
     </Dialog>
-    <Dialog v-if="deleteTag" @close-dialog="deleteTag = false">
+    <Dialog :show="deleteTag" @close-dialog="deleteTag = false">
       <DeleteTag :tag="selectedTag" />
     </Dialog>
   </div>

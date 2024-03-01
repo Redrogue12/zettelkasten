@@ -41,7 +41,7 @@
     >
   </div>
 
-  <Dialog v-if="tag" @close-dialog="tag = false">
+  <Dialog :show="tag" @close-dialog="tag = false">
     <NoteTags :note="note" @tag-linked="tag = false" />
   </Dialog>
 </template>
