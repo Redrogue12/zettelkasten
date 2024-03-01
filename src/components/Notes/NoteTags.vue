@@ -19,15 +19,17 @@
         v-for="tag in filteredTags"
         :key="tag.tag_id"
         :tag="tag"
-        @click.stop="connectTag(tag)"
+        @click.stop="onConnect(tag, note.id)"
       />
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import TagPill from "../Tags/TagPill.vue";
+
+import { useTagsStore as tagsStore } from "@/stores/tagsStore";
+import { mapState, mapActions } from "pinia";
 export default {
   name: "NoteTags",
   components: {
@@ -35,8 +37,6 @@ export default {
   },
   data() {
     return {
-      error: false,
-      tags: [],
       tagSearch: "",
     };
   },
@@ -46,13 +46,14 @@ export default {
       required: true,
     },
   },
-  mounted() {
+  async mounted() {
     if (this.$refs.tagSearchInput) {
       this.$refs.tagSearchInput.focus();
     }
-    this.fetchTags();
+    await this.fetchTags();
   },
   computed: {
+    ...mapState(tagsStore, ["tags", "error"]),
     tagIds() {
       return this.note?.tags.map((tag) => tag.tag_id) || [];
     },
@@ -65,41 +66,10 @@ export default {
     },
   },
   methods: {
-    async fetchTags() {
-      try {
-        const response = await fetch("http://localhost:3000/tags");
-
-        if (!response.ok) {
-          this.error = true;
-          throw new Error("Failed to fetch tags");
-        }
-
-        this.tags = await response.json();
-      } catch (error) {
-        console.error(error);
-        this.error = true;
-        throw new Error("Failed to fetch tags");
-      }
-    },
-    async connectTag(tag) {
-      const { tag_id } = tag;
-      const note_id = this.note.id;
-      try {
-        const response = await axios.post(`http://localhost:3000/tags/link`, {
-          note_id,
-          tag_id,
-        });
-
-        if (response.status === 201) {
-          console.log("Tag linked successfully");
-          this.$emit("tag-linked", tag);
-        } else {
-          console.log("Failed to link tag");
-          throw new Error("Failed to link tag");
-        }
-      } catch (error) {
-        console.error(error);
-      }
+    ...mapActions(tagsStore, ["fetchTags", "connectTag"]),
+    onConnect(tag, note_id) {
+      this.connectTag(tag, note_id);
+      this.$emit("tag-linked");
     },
   },
 };

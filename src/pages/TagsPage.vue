@@ -28,19 +28,17 @@
       </div>
     </div>
     <Dialog v-if="create" @close-dialog="create = false">
-      <CreateTag @created="onTagCreated" />
+      <CreateTag @created="create = false" />
     </Dialog>
     <Dialog v-if="edit" @close-dialog="edit = false">
       <EditTag
         :tag="selectedTag"
         @edited="
           edit = false;
-          this.tags[selectedTag.index] = $event;
           selectedTag = null;
         "
       />
     </Dialog>
-    <!-- eslint-disable -->
     <Dialog v-if="deleteTag" @close-dialog="deleteTag = false">
       <DeleteTag :tag="selectedTag" />
     </Dialog>
@@ -50,6 +48,9 @@
 <script>
 import { TagPill, CreateTag, DeleteTag, EditTag } from "@/components/Tags";
 import Dialog from "@/components/Dialog";
+
+import { useTagsStore as tagsStore } from "@/stores/tagsStore";
+import { mapActions, mapState } from "pinia";
 export default {
   name: "TagsPage",
   components: {
@@ -66,29 +67,16 @@ export default {
       edit: false,
       deleteTag: false,
       selectedTag: null,
-      tags: [],
     };
   },
+  computed: {
+    ...mapState(tagsStore, ["tags", "error"]),
+  },
   async created() {
-    try {
-      const response = await fetch("http://localhost:3000/tags");
-
-      if (!response.ok) {
-        this.error = true;
-        throw new Error("Failed to fetch tags");
-      }
-
-      this.tags = await response.json();
-    } catch (error) {
-      console.error(error);
-      this.error = true;
-    }
+    this.fetchTags();
   },
   methods: {
-    onTagCreated(tag) {
-      this.tags.push(tag);
-      this.create = false;
-    },
+    ...mapActions(tagsStore, ["fetchTags"]),
   },
 };
 </script>

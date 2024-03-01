@@ -1,26 +1,26 @@
 <template>
-  <h3>Create a Tag</h3>
-  <form @submit.prevent="createTag">
-    <label for="tagName">Tag Name:</label>
-    <input
-      id="tagName"
-      ref="tagNameInput"
-      class="form-control"
-      v-model="tagName"
-      required
-    />
-
-    <button
-      class="btn btn-success"
-      style="width: 120px; align-self: center"
-      type="submit"
-    >
-      Create Tag
-    </button>
-  </form>
+  <h2>Create a Tag</h2>
+  <div class="form-group">
+    <label class="mb-3 w-100">
+      <span>Title:</span>
+      <input ref="tagNameInput" class="form-control" v-model="tagName" />
+    </label>
+  </div>
+  <div v-if="error" class="alert alert-danger mt-3">{{ error }}</div>
+  <button
+    class="btn btn-success centered-btn"
+    @click.stop="
+      createTag(tagName);
+      $emit('created');
+    "
+  >
+    Submit
+  </button>
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import { useTagsStore as tagsStore } from "../../stores/tagsStore";
 export default {
   name: "CreateTag",
   data() {
@@ -32,43 +32,10 @@ export default {
   mounted() {
     if (this.$refs.tagNameInput) {
       this.$refs.tagNameInput.focus();
-      this.localTag = { ...this.tag };
     }
   },
   methods: {
-    async createTag() {
-      try {
-        const response = await fetch("http://localhost:3000/tags", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tag_name: this.tagName,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to create tag");
-        }
-
-        const newTag = await response.json();
-
-        this.$emit("created", newTag);
-        this.tagName = "";
-        alert("Tag created successfully!");
-      } catch (error) {
-        console.error(error);
-      }
-    },
+    ...mapActions(tagsStore, ["createTag"]),
   },
 };
 </script>
-
-<style scoped>
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-</style>

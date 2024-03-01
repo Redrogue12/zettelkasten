@@ -18,51 +18,35 @@
   </div>
   <div v-if="error" class="alert alert-danger mt-3">{{ this.error }}</div>
   <button
-    class="btn btn-success"
-    style="width: 100px; align-self: center"
-    @click.stop="createNote"
+    class="btn btn-success centered-btn"
+    @click.stop="
+      createNote(note_title, note_text);
+      created();
+    "
   >
     Submit
   </button>
 </template>
 
 <script>
+import { mapState, mapActions } from "pinia";
+import { useNotesStore as notesStore } from "../../stores/notesStore";
 export default {
   name: "CreateNote",
   data() {
     return {
       note_title: "",
       note_text: "",
-      error: null,
     };
   },
   emits: ["created"],
+  computed: {
+    ...mapState(notesStore, { error: "getError" }),
+  },
   methods: {
+    ...mapActions(notesStore, ["createNote"]),
     created() {
       this.$emit("created");
-      this.error = null;
-    },
-    async createNote() {
-      try {
-        const response = await fetch(`http://localhost:3000/notes`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            note_title: this.note_title,
-            note_text: this.note_text,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to createnote");
-        } else console.log("Note created successfully");
-        this.created();
-      } catch (error) {
-        this.error = "Failed to create note";
-        console.error(error);
-      }
     },
   },
   mounted() {
@@ -72,14 +56,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-group label {
-  display: flex;
-  width: 100%;
-}
-
-.form-group label span {
-  width: 70px;
-}
-</style>

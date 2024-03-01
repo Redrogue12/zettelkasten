@@ -1,4 +1,4 @@
-import notesStore from "./notesStore";
-import tagsStore from "./tagsStore";
+import useNotesStore from "./notesStore";
+import useTagsStore from "./tagsStore";
 
-export { notesStore, tagsStore };
+export { useNotesStore, useTagsStore };

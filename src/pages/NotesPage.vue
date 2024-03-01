@@ -52,8 +52,8 @@ import {
   DeleteNote,
 } from "../components/Notes";
 import Dialog from "../components/Dialog";
-import { useNotesStore as notesStore } from "../../src/stores/notesStore";
 
+import { useNotesStore as notesStore } from "../stores/notesStore";
 import { mapState, mapActions } from "pinia";
 
 export default {

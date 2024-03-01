@@ -26,16 +26,18 @@
     Modified: {{ new Date(selectedNote.date_modified).toLocaleDateString() }}
   </p>
   <button
-    class="btn btn-success"
-    style="width: 100px; align-self: center"
+    class="btn btn-success centered-btn"
     id="edit-submit-button"
-    @click.stop="editNote"
+    @click.stop="onEdit(localNote)"
   >
     Submit
   </button>
 </template>
 
 <script>
+import { useNotesStore as notesStore } from "@/stores/notesStore";
+import { mapActions } from "pinia";
+
 export default {
   name: "EditNote",
   props: {
@@ -61,51 +63,21 @@ export default {
   },
   data() {
     return {
-      localNote: this.selectedNote,
+      localNote: { ...this.selectedNote },
     };
   },
   emits: ["edited"],
-  watch: {
-    selectedNote(newVal) {
-      this.localNote = newVal;
-    },
-  },
-  methods: {
-    edited() {
-      this.$emit("edited");
-    },
-    async editNote() {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/notes/${this.selectedNote.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              note_title: this.selectedNote.note_title,
-              note_text: this.selectedNote.note_text,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to update note");
-        } else console.log("Note updated successfully");
-
-        await response.json();
-
-        this.edited();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-  },
   mounted() {
     if (this.$refs.titleInput) {
       this.$refs.titleInput.focus();
     }
+  },
+  methods: {
+    ...mapActions(notesStore, ["editNote"]),
+    onEdit(note) {
+      this.editNote(note);
+      this.$emit("edited");
+    },
   },
 };
 </script>

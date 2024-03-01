@@ -40,6 +40,73 @@ export const useNotesStore = defineStore("notes", {
         this.notesError = true;
       }
     },
+    async createNote(note_title, note_text) {
+      if (!note_title || !note_text) return console.error("Invalid note");
+      try {
+        const response = await fetch(`http://localhost:3000/notes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            note_title,
+            note_text,
+          }),
+        });
+
+        if (!response.ok) {
+          this.notesError = "Failed to create note";
+          throw new Error("Failed to creat enote");
+        } else {
+          console.log("Note created successfully");
+          const note = await response.json();
+          this.pushNote(note);
+        }
+      } catch (error) {
+        this.noteError = "Failed to create note";
+        console.error(error);
+      }
+    },
+    async editNote(note) {
+      const { id, note_title, note_text } = note;
+      try {
+        const response = await fetch(`http://localhost:3000/notes/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            note_title,
+            note_text,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update note");
+        } else console.log("Note updated successfully");
+
+        const result = await response.json();
+        const index = this.notes.findIndex((n) => n.id === id);
+        this.notes[index] = result;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async deleteNote(id) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:3000/notes/${id}`
+        );
+
+        if (response.status === 204) {
+          console.log("note deleted successfully");
+          const index = this.notes.indexOf((note) => note.id === id);
+          this.notes.splice(index, 1);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async fetchRelatedNotes(id) {
       try {
         const response = await fetch(`http://localhost:3000/links/${id}`);
@@ -52,6 +119,12 @@ export const useNotesStore = defineStore("notes", {
       } catch (error) {
         console.error(error);
       }
+    },
+    pushTagToNote(tag, note_id) {
+      const note = this.getNote(note_id);
+      note.tags.push(tag);
+      const index = this.notes.findIndex((n) => n.id === note_id);
+      this.notes[index] = note;
     },
     async linkNotes(id1, id2) {
       if (this.relatedNotes.find((note) => note.id === id2)) return;

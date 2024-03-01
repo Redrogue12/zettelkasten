@@ -13,7 +13,7 @@
       @click.stop="clickTag"
     />
   </div>
-  <div class="d-flex">
+  <div class="d-flex flex-wrap">
     <TagPill v-for="tag in note.tags" :key="tag.tag_id" :tag="tag" size="sm" />
   </div>
   <p class="d-inline">{{ note?.note_text }}</p>

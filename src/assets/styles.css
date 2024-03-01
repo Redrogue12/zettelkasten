@@ -19,3 +19,17 @@ body {
 .ml-3 {
   margin-left: 1rem;
 }
+
+.centered-btn {
+  width: 120px;
+  align-self: center;
+}
+
+.form-group label {
+  display: flex;
+  width: 100%;
+}
+
+.form-group label span {
+  width: 70px;
+}
