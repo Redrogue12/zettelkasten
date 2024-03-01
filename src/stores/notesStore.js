@@ -27,7 +27,12 @@ export const useNotesStore = defineStore("notes", {
     },
     async fetchNotes() {
       try {
-        const response = await fetch("http://localhost:3000/notes");
+        const token = localStorage.getItem("zettelkasten_token");
+        const response = await fetch("http://localhost:3000/notes", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -43,10 +48,12 @@ export const useNotesStore = defineStore("notes", {
     async createNote(note_title, note_text) {
       if (!note_title || !note_text) return console.error("Invalid note");
       try {
+        const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(`http://localhost:3000/notes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             note_title,
@@ -70,10 +77,12 @@ export const useNotesStore = defineStore("notes", {
     async editNote(note) {
       const { id, note_title, note_text } = note;
       try {
+        const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(`http://localhost:3000/notes/${id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             note_title,
@@ -94,8 +103,14 @@ export const useNotesStore = defineStore("notes", {
     },
     async deleteNote(id) {
       try {
+        const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.delete(
-          `http://localhost:3000/notes/${id}`
+          `http://localhost:3000/notes/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         if (response.status === 204) {
@@ -109,7 +124,12 @@ export const useNotesStore = defineStore("notes", {
     },
     async fetchRelatedNotes(id) {
       try {
-        const response = await fetch(`http://localhost:3000/links/${id}`);
+        const token = localStorage.getItem("zettelkasten_token");
+        const response = await fetch(`http://localhost:3000/links/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -129,10 +149,19 @@ export const useNotesStore = defineStore("notes", {
     async linkNotes(id1, id2) {
       if (this.relatedNotes.find((note) => note.id === id2)) return;
       try {
-        const response = await axios.post(`http://localhost:3000/links`, {
-          id1,
-          id2,
-        });
+        const token = localStorage.getItem("zettelkasten_token");
+        const response = await axios.post(
+          `http://localhost:3000/links`,
+          {
+            id1,
+            id2,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.status === 201) {
           console.log("Notes linked successfully");
@@ -147,12 +176,21 @@ export const useNotesStore = defineStore("notes", {
     },
     async unlinkNotes(id1, id2, index) {
       try {
-        const response = await axios.delete(`http://localhost:3000/links`, {
-          params: {
-            id1: id1,
-            id2: id2,
+        const token = localStorage.getItem("zettelkasten_token");
+        const response = await axios.delete(
+          `http://localhost:3000/links`,
+          {
+            params: {
+              id1: id1,
+              id2: id2,
+            },
           },
-        });
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.status === 204) {
           console.log("Notes unlinked successfully");

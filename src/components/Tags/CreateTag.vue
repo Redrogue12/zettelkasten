@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { mapActions } from "pinia";
 import { useTagsStore as tagsStore } from "../../stores/tagsStore";
+import { mapState, mapActions } from "pinia";
 export default {
   name: "CreateTag",
   data() {
@@ -33,6 +33,9 @@ export default {
     if (this.$refs.tagNameInput) {
       this.$refs.tagNameInput.focus();
     }
+  },
+  computed: {
+    ...mapState(tagsStore, ["error"]),
   },
   methods: {
     ...mapActions(tagsStore, ["createTag"]),

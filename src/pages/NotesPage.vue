@@ -3,6 +3,7 @@
     <h3>Failed to fetch notes</h3>
   </div>
   <div class="container" v-else>
+    <p class="mt-3 mb-0 ml-3">Welcome, {{ user?.username }}!</p>
     <div class="d-flex align-items-baseline">
       <h1 class="m-3">Notes</h1>
       <font-awesome-icon
@@ -22,7 +23,7 @@
       />
     </div>
 
-    <Dialog :show="view" @close-dialog="view = false">
+    <Dialog v-if="view" @close-dialog="view = false">
       <ViewNote
         :note="selectedNote"
         @edit-dialog="editDialog"
@@ -30,15 +31,15 @@
       />
     </Dialog>
 
-    <Dialog :show="edit" @close-dialog="closeEdit">
+    <Dialog v-if="edit" @close-dialog="closeEdit">
       <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
     </Dialog>
-    <Dialog :show="create" @close-dialog="create = false">
+    <Dialog v-if="create" @close-dialog="create = false">
       <CreateNote @created="onNoteCreated" />
     </Dialog>
 
     <!-- eslint-disable -->
-    <Dialog :show="delete" @close-dialog="deleted">
+    <Dialog v-if="delete" @close-dialog="deleted">
       <DeleteNote :note="selectedNote" @deleted="deleted" />
     </Dialog>
   </div>
@@ -55,6 +56,7 @@ import {
 import Dialog from "../components/Dialog";
 
 import { useNotesStore as notesStore } from "../stores/notesStore";
+import { useUserStore as userStore } from "../stores/userStore";
 import { mapState, mapActions } from "pinia";
 
 export default {
@@ -81,6 +83,7 @@ export default {
   },
   computed: {
     ...mapState(notesStore, { notes: "getNotes", error: "getError" }),
+    ...mapState(userStore, { user: "getUser" }),
   },
   methods: {
     ...mapActions(notesStore, ["fetchNotes"]),

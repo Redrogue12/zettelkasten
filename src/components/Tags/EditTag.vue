@@ -20,7 +20,7 @@
   <button
     class="btn btn-success centered-btn"
     id="edit-submit-button"
-    @click.stop="onEdit(tag)"
+    @click.stop="onEdit(localTag.tag_name, tag.tag_id)"
   >
     Submit
   </button>
@@ -55,8 +55,8 @@ export default {
   },
   methods: {
     ...mapActions(tagsStore, ["editTag"]),
-    onEdit(tag) {
-      this.editTag(tag);
+    onEdit(tag, id) {
+      this.editTag(tag, id);
       this.$emit("edited");
     },
   },

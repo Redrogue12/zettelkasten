@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" ref="dialog">
+  <div ref="dialog">
     <div class="dialog">
       <slot />
       <font-awesome-icon
@@ -15,12 +15,6 @@
 export default {
   name: "Simple-Dialog",
   emits: ["close-dialog"],
-  props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
-  },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
   },

@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex">
     <h2>{{ note?.note_title }}</h2>
-    <router-link :to="`/links/${note.id}`">
+    <router-link :to="`/links/${note?.id}`">
       <font-awesome-icon
         class="dialog-link-icon fa-lg ml-3 mt-2 pointer"
         icon="link"
@@ -14,7 +14,7 @@
     />
   </div>
   <div class="d-flex flex-wrap">
-    <TagPill v-for="tag in note.tags" :key="tag.tag_id" :tag="tag" size="sm" />
+    <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" size="sm" />
   </div>
   <p class="d-inline">{{ note?.note_text }}</p>
   <div class="d-flex justify-content-end">
@@ -41,7 +41,7 @@
     >
   </div>
 
-  <Dialog :show="tag" @close-dialog="tag = false">
+  <Dialog v-if="tag" @close-dialog="tag = false">
     <NoteTags :note="note" @tag-linked="tag = false" />
   </Dialog>
 </template>

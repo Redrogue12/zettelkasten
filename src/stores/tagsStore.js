@@ -30,10 +30,12 @@ export const useTagsStore = defineStore("Tags", {
     },
     async createTag(tag_name) {
       try {
+        const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch("http://localhost:3000/tags", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             tag_name,
@@ -46,32 +48,30 @@ export const useTagsStore = defineStore("Tags", {
 
         const newTag = await response.json();
         this.tags.push(newTag);
-        alert("Tag created successfully!");
       } catch (error) {
         console.error(error);
       }
     },
-    async editTag(tag) {
+    async editTag(tag_name, id) {
       try {
-        const response = await fetch(
-          `http://localhost:3000/tags/${tag.tag_id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              tag_name: tag.tag_name,
-            }),
-          }
-        );
+        const token = localStorage.getItem("zettelkasten_token");
+        const response = await fetch(`http://localhost:3000/tags/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            tag_name,
+          }),
+        });
 
         if (!response.ok) {
           throw new Error("Failed to update tag");
         } else console.log("Tag updated successfully");
 
         const result = await response.json();
-        const index = this.tags.findIndex((t) => t.tag_id === tag.tag_id);
+        const index = this.tags.findIndex((t) => t.tag_id === id);
         this.tags[index] = result;
       } catch (error) {
         console.error(error);
@@ -80,8 +80,13 @@ export const useTagsStore = defineStore("Tags", {
     async deleteTag(id) {
       if (!id) return console.error("No tag id provided");
       try {
+        const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(`http://localhost:3000/tags/${id}`, {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
 
         if (!response.ok) {
@@ -96,10 +101,20 @@ export const useTagsStore = defineStore("Tags", {
     async connectTag(tag, note_id) {
       const { tag_id } = tag;
       try {
-        const response = await axios.post(`http://localhost:3000/tags/link`, {
-          note_id,
-          tag_id,
-        });
+        const token = localStorage.getItem("zettelkasten_token");
+        const response = await axios.post(
+          `http://localhost:3000/tags/link`,
+          {
+            note_id,
+            tag_id,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.status === 201) {
           console.log("Tag linked successfully");
