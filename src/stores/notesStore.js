@@ -13,7 +13,8 @@ export const useNotesStore = defineStore("notes", {
   },
   actions: {
     getNote(id) {
-      return this.notes.find((note) => note.id === id);
+      const note = this.notes.find((note) => note.id === id);
+      return note;
     },
     pushNote(note) {
       this.notes.push(note);
@@ -25,10 +26,11 @@ export const useNotesStore = defineStore("notes", {
     removeLinkedNote(index) {
       this.relatedNotes.splice(index, 1);
     },
-    async fetchNotes() {
+    async fetchNotes(user_id) {
+      if (!user_id) return console.error("Invalid user id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch("http://localhost:3000/notes", {
+        const response = await fetch(`http://localhost:3000/notes/${user_id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -45,11 +47,11 @@ export const useNotesStore = defineStore("notes", {
         this.notesError = true;
       }
     },
-    async createNote(note_title, note_text) {
+    async createNote(note_title, note_text, user_id) {
       if (!note_title || !note_text) return console.error("Invalid note");
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/notes`, {
+        const response = await fetch(`http://localhost:3000/notes/${user_id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -61,6 +63,7 @@ export const useNotesStore = defineStore("notes", {
           }),
         });
 
+        console.log("response:", response);
         if (!response.ok) {
           this.notesError = "Failed to create note";
           throw new Error("Failed to creat enote");

@@ -31,8 +31,8 @@ export default {
         : this.note.note_text;
     },
     truncatedNoteTitle() {
-      return this.note.note_title?.length > 23
-        ? this.note.note_title.substring(0, 23) + "..."
+      return this.note.note_title?.length > 22
+        ? this.note.note_title.substring(0, 22) + "..."
         : this.note.note_title;
     },
   },
@@ -54,6 +54,7 @@ export default {
   width: 250px;
   height: 125px;
   cursor: pointer;
+  word-wrap: break-word;
 }
 
 .note-dates {

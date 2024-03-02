@@ -51,6 +51,17 @@ body,
   }
 }
 
+.notes-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 499px) {
+  .notes-container {
+    justify-content: center;
+  }
+}
+
 .note-card {
   opacity: 0;
   transition: transform 0.3s ease, scale 0.3s ease;
@@ -60,4 +71,11 @@ body,
 .note-card:hover {
   transform: scale(1.1) !important;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 200px);
 }

@@ -2,7 +2,7 @@
   <div class="container" v-if="error">
     <h3>Error fetching tags</h3>
   </div>
-  <div class="container" v-else>
+  <div class="container h-100" v-else>
     <div class="d-flex align-items-baseline">
       <h1 class="m-3">Tags</h1>
       <font-awesome-icon
@@ -11,23 +11,21 @@
         @click.stop="create = true"
       />
     </div>
-    <div>
-      <div v-if="tags.length === 0">
-        <h3>No tags found</h3>
-      </div>
-      <div class="d-flex flex-wrap" v-else>
-        <tag-pill
-          class="tag-pill"
-          :style="{ animationDelay: `${i * 0.1}s` }"
-          v-for="(tag, i) in tags"
-          :key="tag.tag_id"
-          :tag="tag"
-          @click.stop="
-            selectedTag = { ...tag, index: i };
-            edit = true;
-          "
-        />
-      </div>
+    <div class="d-flex flex-wrap" v-if="tags.length > 0">
+      <tag-pill
+        class="tag-pill"
+        :style="{ animationDelay: `${i * 0.1}s` }"
+        v-for="(tag, i) in tags"
+        :key="tag.tag_id"
+        :tag="tag"
+        @click.stop="
+          selectedTag = { ...tag, index: i };
+          edit = true;
+        "
+      />
+    </div>
+    <div class="center-content" v-else>
+      <h3 class="ml-3 text-muted">Click + to start writing your first tag</h3>
     </div>
     <Dialog v-if="create" @close-dialog="create = false">
       <CreateTag @created="create = false" />
@@ -53,6 +51,7 @@ import { TagPill, CreateTag, DeleteTag, EditTag } from "@/components/Tags";
 import Dialog from "@/components/Dialog";
 
 import { useTagsStore as tagsStore } from "@/stores/tagsStore";
+import { useUserStore as userStore } from "@/stores/userStore";
 import { mapActions, mapState } from "pinia";
 export default {
   name: "TagsPage",
@@ -73,9 +72,10 @@ export default {
   },
   computed: {
     ...mapState(tagsStore, ["tags", "error"]),
+    ...mapState(userStore, { user: "getUser" }),
   },
   async created() {
-    this.fetchTags();
+    this.fetchTags(this.user?.user_id);
   },
   methods: {
     ...mapActions(tagsStore, ["fetchTags"]),

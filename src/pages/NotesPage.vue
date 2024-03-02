@@ -2,7 +2,7 @@
   <div class="container" v-if="error">
     <h3>Failed to fetch notes</h3>
   </div>
-  <div class="container" v-else>
+  <div class="container h-100" v-else>
     <p class="mt-3 mb-0 ml-3">Welcome, {{ user?.username }}!</p>
     <div class="d-flex align-items-baseline">
       <h1 class="m-3">Notes</h1>
@@ -13,7 +13,7 @@
       />
     </div>
 
-    <div class="notes-container">
+    <div v-if="notes.length > 0" class="notes-container">
       <NoteCard
         v-for="(note, i) in notes"
         :index="i"
@@ -21,6 +21,9 @@
         :note="note"
         @click="viewNote(note)"
       />
+    </div>
+    <div class="center-content" v-else>
+      <h3 class="ml-3 text-muted">Click + to start writing your first note</h3>
     </div>
 
     <Dialog v-if="view" @close-dialog="view = false">
@@ -79,7 +82,7 @@ export default {
     };
   },
   async created() {
-    this.fetchNotes();
+    this.fetchNotes(this.user?.user_id);
   },
   computed: {
     ...mapState(notesStore, { notes: "getNotes", error: "getError" }),
@@ -117,16 +120,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.notes-container {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 499px) {
-  .notes-container {
-    justify-content: center;
-  }
-}
-</style>

@@ -28,7 +28,8 @@
 <script>
 import TagPill from "../Tags/TagPill.vue";
 
-import { useTagsStore as tagsStore } from "@/stores/tagsStore";
+import { useTagsStore as tagsStore } from "../../stores/tagsStore";
+import { useUserStore as userStore } from "../../stores/userStore";
 import { mapState, mapActions } from "pinia";
 export default {
   name: "NoteTags",
@@ -50,10 +51,11 @@ export default {
     if (this.$refs.tagSearchInput) {
       this.$refs.tagSearchInput.focus();
     }
-    await this.fetchTags();
+    if (this.user?.user_id) await this.fetchTags(this.user.user_id);
   },
   computed: {
     ...mapState(tagsStore, ["tags", "error"]),
+    ...mapState(userStore, { user: "getUser" }),
     tagIds() {
       return this.note?.tags.map((tag) => tag.tag_id) || [];
     },

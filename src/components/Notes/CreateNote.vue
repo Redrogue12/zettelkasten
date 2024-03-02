@@ -20,7 +20,7 @@
   <button
     class="btn btn-success centered-btn"
     @click.stop="
-      createNote(note_title, note_text);
+      createNote(note_title, note_text, user?.user_id);
       created();
     "
   >
@@ -31,6 +31,7 @@
 <script>
 import { mapState, mapActions } from "pinia";
 import { useNotesStore as notesStore } from "../../stores/notesStore";
+import { useUserStore as userStore } from "../../stores/userStore";
 export default {
   name: "CreateNote",
   data() {
@@ -42,6 +43,7 @@ export default {
   emits: ["created"],
   computed: {
     ...mapState(notesStore, { error: "getError" }),
+    ...mapState(userStore, { user: "getUser" }),
   },
   methods: {
     ...mapActions(notesStore, ["createNote"]),

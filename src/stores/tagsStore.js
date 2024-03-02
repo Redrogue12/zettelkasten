@@ -13,9 +13,10 @@ export const useTagsStore = defineStore("Tags", {
     getTags: (state) => state.tags,
   },
   actions: {
-    async fetchTags() {
+    async fetchTags(user_id) {
+      if (!user_id) return console.error("Invalid user id");
       try {
-        const response = await fetch("http://localhost:3000/tags");
+        const response = await fetch(`http://localhost:3000/tags/${user_id}`);
 
         if (!response.ok) {
           this.error = true;
