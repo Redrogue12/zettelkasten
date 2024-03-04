@@ -16,15 +16,18 @@ export const useUserStore = defineStore("user", {
       const token = localStorage.zettelkasten_token;
       if (token) {
         try {
-          const response = await fetch("http://localhost:3000/validate", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token,
-            }),
-          });
+          const response = await fetch(
+            `${process.env.VUE_APP_SERVER}/validate`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                token,
+              }),
+            }
+          );
 
           // if (!response.ok) {
           //   throw new Error("Failed to validate token");

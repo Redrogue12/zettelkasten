@@ -16,7 +16,9 @@ export const useTagsStore = defineStore("Tags", {
     async fetchTags(user_id) {
       if (!user_id) return console.error("Invalid user id");
       try {
-        const response = await fetch(`http://localhost:3000/tags/${user_id}`);
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/tags/${user_id}`
+        );
 
         if (!response.ok) {
           this.error = true;
@@ -32,7 +34,7 @@ export const useTagsStore = defineStore("Tags", {
     async createTag(tag_name) {
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch("http://localhost:3000/tags", {
+        const response = await fetch("${process.env.VUE_APP_SERVER}/tags", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -56,16 +58,19 @@ export const useTagsStore = defineStore("Tags", {
     async editTag(tag_name, id) {
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/tags/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            tag_name,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/tags/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              tag_name,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to update tag");
@@ -82,13 +87,16 @@ export const useTagsStore = defineStore("Tags", {
       if (!id) return console.error("No tag id provided");
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/tags/${id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/tags/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to delete tag");
@@ -104,7 +112,7 @@ export const useTagsStore = defineStore("Tags", {
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.post(
-          `http://localhost:3000/tags/link`,
+          `${process.env.VUE_APP_SERVER}/tags/link`,
           {
             note_id,
             tag_id,

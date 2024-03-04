@@ -4,6 +4,16 @@
       <h1>Sign-up</h1>
       <form class="form-group d-flex flex-column" @submit.prevent="signup">
         <label class="mb-3">
+          <span>Username:</span>
+          <input
+            class="form-control"
+            v-model="signupForm.username"
+            placeholder="Username"
+            required
+          />
+        </label>
+
+        <label class="mb-3">
           <span>Email:</span>
           <input
             class="form-control"
@@ -53,25 +63,29 @@ export default {
         alert("Please fill out all fields");
         return;
       }
-      const response = await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(this.signupForm),
-      });
+      try {
+        const response = await fetch(`${process.env.VUE_APP_SERVER}/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.signupForm),
+        });
 
-      if (!response.ok) {
-        console.error("Error signing up");
-        return;
+        if (!response.ok) {
+          console.error("Error signing up");
+          return;
+        }
+
+        const { user, token } = await response.json();
+
+        this.setUser(user, token);
+
+        alert("Signup successful");
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Error signing up", error);
       }
-
-      const { user, token } = await response.json();
-
-      this.setUser(user, token);
-
-      alert("Signup successful");
-      this.$router.push("/");
     },
   },
 };

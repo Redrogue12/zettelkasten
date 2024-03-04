@@ -30,11 +30,14 @@ export const useNotesStore = defineStore("notes", {
       if (!user_id) return console.error("Invalid user id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/notes/${user_id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/notes/${user_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -51,17 +54,20 @@ export const useNotesStore = defineStore("notes", {
       if (!note_title || !note_text) return console.error("Invalid note");
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/notes/${user_id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            note_title,
-            note_text,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/notes/${user_id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              note_title,
+              note_text,
+            }),
+          }
+        );
 
         console.log("response:", response);
         if (!response.ok) {
@@ -81,17 +87,20 @@ export const useNotesStore = defineStore("notes", {
       const { id, note_title, note_text } = note;
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/notes/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            note_title,
-            note_text,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/notes/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              note_title,
+              note_text,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to update note");
@@ -108,7 +117,7 @@ export const useNotesStore = defineStore("notes", {
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.delete(
-          `http://localhost:3000/notes/${id}`,
+          `${process.env.VUE_APP_SERVER}/notes/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -128,11 +137,14 @@ export const useNotesStore = defineStore("notes", {
     async fetchRelatedNotes(id) {
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`http://localhost:3000/links/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/links/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -154,7 +166,7 @@ export const useNotesStore = defineStore("notes", {
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.post(
-          `http://localhost:3000/links`,
+          `${process.env.VUE_APP_SERVER}/links`,
           {
             id1,
             id2,
@@ -181,7 +193,7 @@ export const useNotesStore = defineStore("notes", {
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.delete(
-          `http://localhost:3000/links`,
+          `${process.env.VUE_APP_SERVER}/links`,
           {
             params: {
               id1: id1,
