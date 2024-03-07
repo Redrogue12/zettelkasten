@@ -28,6 +28,8 @@ export const useNotesStore = defineStore("notes", {
     },
     async fetchNotes(user_id) {
       if (!user_id) return console.error("Invalid user id");
+
+      if (this.notes.length > 0) return;
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(

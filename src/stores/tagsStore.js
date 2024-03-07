@@ -15,6 +15,7 @@ export const useTagsStore = defineStore("Tags", {
   actions: {
     async fetchTags(user_id) {
       if (!user_id) return console.error("Invalid user id");
+      if (this.tags.length > 0) return;
       try {
         const response = await fetch(
           `${process.env.VUE_APP_SERVER}/tags/${user_id}`
