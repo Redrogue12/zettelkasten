@@ -10,7 +10,7 @@
   <button
     class="btn btn-success centered-btn"
     @click.stop="
-      createTag(tagName);
+      createTag(tagName, user.user_id);
       $emit('created');
     "
   >
@@ -20,6 +20,7 @@
 
 <script>
 import { useTagsStore as tagsStore } from "../../stores/tagsStore";
+import { useUserStore as userStore } from "../../stores/userStore";
 import { mapState, mapActions } from "pinia";
 export default {
   name: "CreateTag",
@@ -36,6 +37,7 @@ export default {
   },
   computed: {
     ...mapState(tagsStore, ["error"]),
+    ...mapState(userStore, { user: "getUser" }),
   },
   methods: {
     ...mapActions(tagsStore, ["createTag"]),
