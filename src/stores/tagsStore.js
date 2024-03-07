@@ -35,7 +35,7 @@ export const useTagsStore = defineStore("Tags", {
     async createTag(tag_name) {
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch("${process.env.VUE_APP_SERVER}/tags", {
+        const response = await fetch(`${process.env.VUE_APP_SERVER}/tags`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
