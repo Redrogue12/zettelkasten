@@ -2,7 +2,10 @@
   <div class="container">
     <div class="login-container">
       <h1>Login</h1>
-      <form class="form-group d-flex flex-column" @submit.prevent="login">
+      <form
+        class="form-group d-flex flex-column"
+        @submit.prevent="login(loginForm.email, loginForm.password)"
+      >
         <label class="mb-3">
           <span>Email:</span>
           <input
@@ -45,35 +48,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(userStore, ["setUser"]),
-    async login() {
-      const { email, password } = this.loginForm;
-      if (!email || !password) {
-        alert("Please fill out all fields");
-        return;
-      }
-      try {
-        const response = await fetch(`${process.env.VUE_APP_SERVER}/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.loginForm),
-        });
-
-        if (!response.ok) {
-          console.error("Error logging in");
-          return;
-        }
-
-        const { user, token } = await response.json();
-        this.setUser(user, token);
-
-        this.$router.push("/");
-      } catch (error) {
-        console.error("Error logging in");
-      }
-    },
+    ...mapActions(userStore, ["setUser", "login"]),
   },
 };
 </script>

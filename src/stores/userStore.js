@@ -12,6 +12,62 @@ export const useUserStore = defineStore("user", {
     getError: (state) => state.userError,
   },
   actions: {
+    async signup(username, email, password) {
+      if (!username || !email || !password) {
+        alert("Please fill out all fields");
+        return;
+      }
+      try {
+        const response = await fetch(`${process.env.VUE_APP_SERVER}/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.signupForm),
+        });
+
+        if (!response.ok) {
+          console.error("Error signing up");
+          return;
+        }
+
+        const { user, token } = await response.json();
+
+        this.setUser(user, token);
+
+        alert("Signup successful");
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Error signing up", error);
+      }
+    },
+    async login(email, password) {
+      if (!email || !password) {
+        alert("Please fill out all fields");
+        return;
+      }
+      try {
+        const response = await fetch(`${process.env.VUE_APP_SERVER}/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.loginForm),
+        });
+
+        if (!response.ok) {
+          console.error("Error logging in");
+          return;
+        }
+
+        const { user, token } = await response.json();
+        this.setUser(user, token);
+
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Error logging in");
+      }
+    },
     async validateToken() {
       const token = localStorage.zettelkasten_token;
       if (token) {
@@ -29,9 +85,9 @@ export const useUserStore = defineStore("user", {
             }
           );
 
-          // if (!response.ok) {
-          //   throw new Error("Failed to validate token");
-          // }
+          if (!response.ok) {
+            throw new Error("Failed to validate token");
+          }
           return response.json();
         } catch (error) {
           console.error("Error:", error);

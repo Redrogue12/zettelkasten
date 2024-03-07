@@ -2,7 +2,12 @@
   <div class="container">
     <div class="login-container">
       <h1>Sign-up</h1>
-      <form class="form-group d-flex flex-column" @submit.prevent="signup">
+      <form
+        class="form-group d-flex flex-column"
+        @submit.prevent="
+          signup(signupForm.username, signupForm.email, signupForm.password)
+        "
+      >
         <label class="mb-3">
           <span>Username:</span>
           <input
@@ -56,37 +61,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(userStore, ["setUser"]),
-    async signup() {
-      const { username, email, password } = this.signupForm;
-      if (!username || !email || !password) {
-        alert("Please fill out all fields");
-        return;
-      }
-      try {
-        const response = await fetch(`${process.env.VUE_APP_SERVER}/signup`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(this.signupForm),
-        });
-
-        if (!response.ok) {
-          console.error("Error signing up");
-          return;
-        }
-
-        const { user, token } = await response.json();
-
-        this.setUser(user, token);
-
-        alert("Signup successful");
-        this.$router.push("/");
-      } catch (error) {
-        console.error("Error signing up", error);
-      }
-    },
+    ...mapActions(userStore, ["setUser", "signup"]),
   },
 };
 </script>

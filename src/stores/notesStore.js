@@ -69,7 +69,6 @@ export const useNotesStore = defineStore("notes", {
           }
         );
 
-        console.log("response:", response);
         if (!response.ok) {
           this.notesError = "Failed to create note";
           throw new Error("Failed to creat enote");
