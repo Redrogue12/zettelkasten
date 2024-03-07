@@ -1,5 +1,9 @@
 import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
+import { useNotesStore } from "./notesStore";
+import { useTagsStore } from "./tagsStore";
+
+import { mapActions } from "pinia";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -14,6 +18,8 @@ export const useUserStore = defineStore("user", {
     getError: (state) => state.userError,
   },
   actions: {
+    ...mapActions(useNotesStore, ["resetNotesStore"]),
+    ...mapActions(useTagsStore, ["resetTagsStore"]),
     async signup(username, email, password) {
       if (!username || !email || !password) {
         alert("Please fill out all fields");
@@ -102,10 +108,16 @@ export const useUserStore = defineStore("user", {
       localStorage.setItem("zettelkasten_user", JSON.stringify(user));
       this.user = user;
     },
+    resetUsersStore() {
+      this.user = null;
+      this.userError = false;
+    },
     logout() {
       localStorage.removeItem("zettelkasten_token");
       localStorage.removeItem("zettelkasten_user");
-      this.user = null;
+      this.resetUsersStore();
+      this.resetNotesStore();
+      this.resetTagsStore();
     },
   },
 });

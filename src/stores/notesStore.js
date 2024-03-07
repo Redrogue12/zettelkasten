@@ -218,5 +218,10 @@ export const useNotesStore = defineStore("notes", {
         console.error(error);
       }
     },
+    resetNotesStore() {
+      this.notes = [];
+      this.notesError = false;
+      this.relatedNotes = [];
+    },
   },
 });

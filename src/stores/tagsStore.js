@@ -28,23 +28,27 @@ export const useTagsStore = defineStore("Tags", {
 
         this.tags = await response.json();
       } catch (error) {
-        console.error(error);
+        console.error("tags error", error);
         this.error = true;
       }
     },
-    async createTag(tag_name) {
+    async createTag(tag_name, id) {
+      if (!tag_name || !id) return console.error("Invalid tag");
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(`${process.env.VUE_APP_SERVER}/tags`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            tag_name,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_SERVER}/tags/${id}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              tag_name,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to create tag");
@@ -137,6 +141,10 @@ export const useTagsStore = defineStore("Tags", {
       } catch (error) {
         console.error(error);
       }
+    },
+    resetTagsStore() {
+      this.tags = [];
+      this.error = false;
     },
   },
 });
