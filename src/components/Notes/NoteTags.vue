@@ -52,6 +52,7 @@ export default {
       this.$refs.tagSearchInput.focus();
     }
     if (this.user?.user_id) await this.fetchTags(this.user.user_id);
+    else console.error("User not found in NoteTags.vue");
   },
   computed: {
     ...mapState(tagsStore, ["tags", "error"]),
