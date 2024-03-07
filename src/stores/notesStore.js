@@ -136,6 +136,7 @@ export const useNotesStore = defineStore("notes", {
       }
     },
     async fetchRelatedNotes(id) {
+      if (!id) return console.error("Invalid note id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
