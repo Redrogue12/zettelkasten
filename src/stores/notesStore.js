@@ -13,14 +13,14 @@ export const useNotesStore = defineStore("notes", {
   },
   actions: {
     getNote(id) {
-      const note = this.notes.find((note) => note.id === id);
+      const note = this.notes.find((note) => note.note_id === id);
       return note;
     },
     pushNote(note) {
       this.notes.push(note);
     },
     pushLinkedNote(note) {
-      if (this.relatedNotes.find((n) => n.id === note.id)) return;
+      if (this.relatedNotes.find((n) => n.id === note.note_id)) return;
       this.relatedNotes.push(note);
     },
     removeLinkedNote(index) {
@@ -128,7 +128,7 @@ export const useNotesStore = defineStore("notes", {
 
         if (response.status === 204) {
           console.log("note deleted successfully");
-          const index = this.notes.indexOf((note) => note.id === id);
+          const index = this.notes.indexOf((note) => note.note_id === id);
           this.notes.splice(index, 1);
         }
       } catch (error) {
@@ -164,7 +164,7 @@ export const useNotesStore = defineStore("notes", {
       this.notes[index] = note;
     },
     async linkNotes(id1, id2) {
-      if (this.relatedNotes.find((note) => note.id === id2)) return;
+      if (this.relatedNotes.find((note) => note.note_id === id2)) return;
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.post(

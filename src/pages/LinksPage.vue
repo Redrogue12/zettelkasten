@@ -16,7 +16,7 @@
           :index="i"
           :key="n.id"
           :note="n"
-          @click="unlinkNotes(note.id, n.id, i)"
+          @click="unlinkNotes(note.note_id, n.id, i)"
         />
       </div>
     </div>
@@ -34,7 +34,7 @@
         :index="i"
         :key="n.id"
         :note="n"
-        @click="linkNotes(note.id, n.id)"
+        @click="linkNotes(note.note_id, n.id)"
       />
     </div>
   </div>

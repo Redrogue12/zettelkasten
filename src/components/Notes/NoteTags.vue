@@ -19,7 +19,7 @@
         v-for="tag in filteredTags"
         :key="tag.tag_id"
         :tag="tag"
-        @click.stop="onConnect(tag, note.id)"
+        @click.stop="onConnect(tag, note.note_id)"
       />
     </div>
   </div>

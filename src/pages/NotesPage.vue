@@ -17,7 +17,7 @@
       <NoteCard
         v-for="(note, i) in notes"
         :index="i"
-        :key="note.id"
+        :key="note.note_id"
         :note="note"
         @click="viewNote(note)"
       />

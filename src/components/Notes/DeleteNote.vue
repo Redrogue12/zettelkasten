@@ -7,7 +7,7 @@
       <button
         class="btn btn-danger"
         @click.stop="
-          deleteNote(note.id);
+          deleteNote(note.note_id);
           $emit('deleted');
         "
       >

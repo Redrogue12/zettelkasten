@@ -73,8 +73,8 @@ export default {
     };
   },
   emits: ["click", "edit-dialog", "deleted"],
-  mounted() {
-    this.fetchRelatedNotes(this.note.id);
+  async mounted() {
+    await this.fetchRelatedNotes(this.note?.note_id);
   },
   computed: {
     ...mapState(notesStore, ["relatedNotes"]),
