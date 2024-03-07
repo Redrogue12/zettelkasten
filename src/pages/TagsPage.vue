@@ -3,6 +3,7 @@
     <h3>Error fetching tags</h3>
   </div>
   <div class="container h-100" v-else>
+    <p class="mt-3 mb-0 ml-3">Welcome, {{ user?.username }}!</p>
     <div class="d-flex align-items-baseline">
       <h1 class="m-3">Tags</h1>
       <font-awesome-icon
@@ -71,7 +72,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(tagsStore, ["tags", "error"]),
+    ...mapState(tagsStore, { tags: "getTags", error: "error" }),
     ...mapState(userStore, { user: "getUser" }),
   },
   async created() {
