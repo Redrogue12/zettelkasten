@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useRouter } from "vue-router";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -6,6 +7,7 @@ export const useUserStore = defineStore("user", {
       ? JSON.parse(localStorage.zettelkasten_user)
       : null,
     userError: false,
+    router: useRouter(),
   }),
   getters: {
     getUser: (state) => state.user,
@@ -23,7 +25,7 @@ export const useUserStore = defineStore("user", {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(this.signupForm),
+          body: JSON.stringify({ username, email, password }),
         });
 
         if (!response.ok) {
@@ -35,8 +37,7 @@ export const useUserStore = defineStore("user", {
 
         this.setUser(user, token);
 
-        alert("Signup successful");
-        this.$router.push("/");
+        this.router.push("/");
       } catch (error) {
         console.error("Error signing up", error);
       }
@@ -52,10 +53,11 @@ export const useUserStore = defineStore("user", {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(this.loginForm),
+          body: JSON.stringify({ email, password }),
         });
 
         if (!response.ok) {
+          console.log("response:", response);
           console.error("Error logging in");
           return;
         }
@@ -63,8 +65,9 @@ export const useUserStore = defineStore("user", {
         const { user, token } = await response.json();
         this.setUser(user, token);
 
-        this.$router.push("/");
+        this.router.push("/");
       } catch (error) {
+        console.log("error:", error);
         console.error("Error logging in");
       }
     },
