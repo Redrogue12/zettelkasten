@@ -2,9 +2,9 @@
 
 import { shallowMount } from "@vue/test-utils";
 import EditNote from "@/components/EditNote.vue";
-import axios from "axios";
+// import axios from "axios";
 
-jest.mock("axios");
+// jest.mock("axios");
 
 describe("EditNote", () => {
   it("renders dialog correctly", () => {
