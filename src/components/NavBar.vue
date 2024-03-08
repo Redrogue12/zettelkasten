@@ -1,12 +1,10 @@
 <template>
   <nav class="navbar">
-    <router-link :to="canNavigate('/')" class="navbar-brand"
-      >Zettelkasten</router-link
-    >
+    <router-link to="/" class="navbar-brand">Zettelkasten</router-link>
     <div class="navbar-links">
       <router-link v-if="!user" to="/signup">Sign-up</router-link>
       <router-link v-if="!user" to="/login">Login</router-link>
-      <router-link :to="canNavigate('/tags')">Tags</router-link>
+      <router-link v-if="user" to="/tags">Tags</router-link>
       <router-link v-if="user" @click="logout" to="/login">Logout</router-link>
     </div>
   </nav>
@@ -22,9 +20,6 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ["logout"]),
-    canNavigate(path) {
-      return this.user ? path : "/login";
-    },
   },
 };
 </script>
