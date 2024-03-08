@@ -1,17 +1,5 @@
 import { defineStore } from "pinia";
-import xior from "xior";
-
-const axios = xior.create({
-  baseURL: process.env.VUE_APP_SERVER,
-});
-
-axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem("zettelkasten_token");
-  if (token) {
-    config.headers["Authorization"] = `Bearer ${token}`;
-  }
-  return config;
-});
+import { http } from "./http";
 
 export const useNotesStore = defineStore("notes", {
   state: () => ({
@@ -43,7 +31,7 @@ export const useNotesStore = defineStore("notes", {
 
       if (this.notes.length > 0) return;
       try {
-        const { data } = await axios.get(`/notes/${user_id}`);
+        const { data } = await http.get(`/notes/${user_id}`);
         this.notes = data;
         if (this.notesError) this.notesError = false;
       } catch (error) {
@@ -54,8 +42,7 @@ export const useNotesStore = defineStore("notes", {
     async createNote(note_title, note_text, user_id) {
       if (!note_title || !note_text) return console.error("Invalid note");
       try {
-        const token = localStorage.getItem("zettelkasten_token");
-        const response = await axios.post(`/notes/${user_id}`, {
+        const response = await http.post(`/notes/${user_id}`, {
           note_title,
           note_text,
         });
@@ -76,8 +63,7 @@ export const useNotesStore = defineStore("notes", {
     async editNote(note) {
       const { id, note_title, note_text } = note;
       try {
-        const token = localStorage.getItem("zettelkasten_token");
-        const response = await axios.put(`/notes/${id}`, {
+        const response = await http.put(`/notes/${id}`, {
           note_title,
           note_text,
         });
@@ -95,7 +81,7 @@ export const useNotesStore = defineStore("notes", {
     },
     async deleteNote(id) {
       try {
-        const response = await axios.delete(`/notes/${id}`);
+        const response = await http.delete(`/notes/${id}`);
 
         if (response.status === 204) {
           console.log("note deleted successfully");
@@ -109,7 +95,7 @@ export const useNotesStore = defineStore("notes", {
     async fetchRelatedNotes(id) {
       if (!id) return console.error("Invalid note id");
       try {
-        const { data } = await axios.get(`/links/${id}`);
+        const { data } = await http.get(`/links/${id}`);
         this.relatedNotes = data;
       } catch (error) {
         console.error(error);
@@ -124,7 +110,7 @@ export const useNotesStore = defineStore("notes", {
     async linkNotes(id1, id2) {
       if (this.relatedNotes.find((note) => note.note_id === id2)) return;
       try {
-        const response = await axios.post(`/links`, {
+        const response = await http.post(`/links`, {
           id1,
           id2,
         });
@@ -142,7 +128,7 @@ export const useNotesStore = defineStore("notes", {
     },
     async unlinkNotes(id1, id2, index) {
       try {
-        const response = await axios.delete(`/links`, {
+        const response = await http.delete(`/links`, {
           params: {
             id1: id1,
             id2: id2,

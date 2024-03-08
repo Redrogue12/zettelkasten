@@ -1,6 +1,6 @@
-import { defineStore } from "pinia";
+import { defineStore, mapState } from "pinia";
 import { useNotesStore } from "./notesStore";
-import { mapState } from "pinia";
+import { http } from "./http";
 
 export const useTagsStore = defineStore("Tags", {
   state: () => ({
@@ -16,16 +16,9 @@ export const useTagsStore = defineStore("Tags", {
       if (!user_id) return console.error("Invalid user id");
       if (this.tags.length > 0) return;
       try {
-        const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/${user_id}`
-        );
+        const { data } = await http.get(`/tags/${user_id}`);
 
-        if (!response.ok) {
-          this.error = true;
-          throw new Error("Failed to fetch tags");
-        }
-
-        this.tags = await response.json();
+        this.tags = data;
       } catch (error) {
         console.error("tags error", error);
         this.error = true;
@@ -34,20 +27,9 @@ export const useTagsStore = defineStore("Tags", {
     async createTag(tag_name, id) {
       if (!tag_name || !id) return console.error("Invalid tag");
       try {
-        const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/id/${id}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              tag_name,
-            }),
-          }
-        );
+        const response = await http.post(`/tags/id/${id}`, {
+          tag_name,
+        });
 
         if (!response.ok) {
           throw new Error("Failed to create tag");
@@ -62,28 +44,12 @@ export const useTagsStore = defineStore("Tags", {
     async editTag(tag_name, id) {
       if (!tag_name || !id) return console.error("Invalid tag");
       try {
-        const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              tag_name,
-            }),
-          }
-        );
+        const { data } = await http.put(`/tags/${id}`, {
+          tag_name,
+        });
 
-        if (!response.ok) {
-          throw new Error("Failed to update tag");
-        } else console.log("Tag updated successfully");
-
-        const result = await response.json();
         const index = this.tags.findIndex((t) => t.tag_id === id);
-        this.tags[index] = result;
+        this.tags[index] = data;
       } catch (error) {
         console.error(error);
       }
@@ -91,21 +57,7 @@ export const useTagsStore = defineStore("Tags", {
     async deleteTag(id) {
       if (!id) return console.error("No tag id provided");
       try {
-        const token = localStorage.getItem("zettelkasten_token");
-        const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to delete tag");
-        } else console.log("Tag deleted successfully");
+        await http.delete(`/tags/${id}`);
 
         this.tags = this.tags.filter((t) => t.tag_id !== id);
       } catch (error) {
@@ -117,22 +69,10 @@ export const useTagsStore = defineStore("Tags", {
         return console.error("Invalid tag or note id");
       const { tag_id } = tag;
       try {
-        const token = localStorage.getItem("zettelkasten_token");
-
-        const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/link`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              tag_id,
-              note_id,
-            }),
-          }
-        );
+        const response = await http.post(`/tags/link`, {
+          tag_id,
+          note_id,
+        });
 
         if (response.status === 201) {
           console.log("Tag linked successfully");
