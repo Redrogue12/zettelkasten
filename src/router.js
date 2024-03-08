@@ -4,6 +4,7 @@ import TagsPage from "./pages/TagsPage.vue";
 import LinksPage from "./pages/LinksPage.vue";
 import SignupPage from "./pages/SignupPage.vue";
 import LoginPage from "./pages/LoginPage.vue";
+import NotFoundPage from "./pages/NotFoundPage.vue";
 
 const routes = [
   {
@@ -31,6 +32,7 @@ const routes = [
     name: "login",
     component: LoginPage,
   },
+  { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFoundPage },
 ];
 
 const router = createRouter({
