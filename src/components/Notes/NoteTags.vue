@@ -61,6 +61,7 @@ export default {
       return this.note?.tags.map((tag) => tag.tag_id) || [];
     },
     filteredTags() {
+      if (!this.tags) return [];
       return this.tags
         .filter((tag) =>
           tag.tag_name.toLowerCase().includes(this.tagSearch.toLowerCase())
