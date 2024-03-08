@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { useNotesStore } from "./notesStore";
 import { mapState } from "pinia";
-import axios from "axios";
 
 export const useTagsStore = defineStore("Tags", {
   state: () => ({
@@ -37,7 +36,7 @@ export const useTagsStore = defineStore("Tags", {
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/${id}`,
+          `${process.env.VUE_APP_SERVER}/tags/id/${id}`,
           {
             method: "POST",
             headers: {
@@ -61,6 +60,7 @@ export const useTagsStore = defineStore("Tags", {
       }
     },
     async editTag(tag_name, id) {
+      if (!tag_name || !id) return console.error("Invalid tag");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -113,20 +113,24 @@ export const useTagsStore = defineStore("Tags", {
       }
     },
     async connectTag(tag, note_id) {
+      if (!tag || !tag.tag_id || !note_id)
+        return console.error("Invalid tag or note id");
       const { tag_id } = tag;
       try {
         const token = localStorage.getItem("zettelkasten_token");
-        const response = await axios.post(
+
+        const response = await fetch(
           `${process.env.VUE_APP_SERVER}/tags/link`,
           {
-            note_id,
-            tag_id,
-          },
-          {
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
+            body: JSON.stringify({
+              tag_id,
+              note_id,
+            }),
           }
         );
 
@@ -139,7 +143,7 @@ export const useTagsStore = defineStore("Tags", {
           throw new Error("Failed to link tag");
         }
       } catch (error) {
-        console.error(error);
+        console.error("tags/link error", error);
       }
     },
     resetTagsStore() {
