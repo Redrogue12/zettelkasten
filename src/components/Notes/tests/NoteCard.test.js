@@ -1,5 +1,7 @@
 import { shallowMount } from "@vue/test-utils";
-import NoteCard from "@/components/NoteCard.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+import NoteCard from "@/components/Notes/NoteCard.vue";
 
 describe("NoteCard", () => {
   it("renders note title and text correctly", () => {
@@ -13,6 +15,11 @@ describe("NoteCard", () => {
     const wrapper = shallowMount(NoteCard, {
       propsData: {
         note,
+      },
+      global: {
+        components: {
+          FontAwesomeIcon,
+        },
       },
     });
 
@@ -31,6 +38,11 @@ describe("NoteCard", () => {
     const wrapper = shallowMount(NoteCard, {
       propsData: {
         note,
+      },
+      global: {
+        components: {
+          FontAwesomeIcon,
+        },
       },
     });
 

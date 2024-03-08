@@ -7,7 +7,9 @@
       <router-link v-if="!user" to="/signup">Sign-up</router-link>
       <router-link v-if="!user" to="/login">Login</router-link>
       <router-link :to="canNavigate('/tags')">Tags</router-link>
-      <router-link v-if="user" @click="logout" to="/login">Logout</router-link>
+      <router-link id="logout" v-if="user" @click="logout" to="/login"
+        >Logout</router-link
+      >
     </div>
   </nav>
 </template>
@@ -23,7 +25,7 @@ export default {
   methods: {
     ...mapActions(userStore, ["logout"]),
     canNavigate(path) {
-      return this.user ? path : "/login";
+      return this?.user ? path : "/login";
     },
   },
 };

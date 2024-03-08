@@ -4,9 +4,7 @@
       <h1>Sign-up</h1>
       <form
         class="form-group d-flex flex-column"
-        @submit.prevent="
-          signup(signupForm.username, signupForm.email, signupForm.password)
-        "
+        @submit.prevent="signupSequence(signupForm)"
       >
         <label class="mb-3">
           <span>Username:</span>
@@ -62,6 +60,11 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ["setUser", "signup"]),
+    async signupSequence(signupForm) {
+      const { username, email, password } = signupForm;
+      await this.signup(username, email, password);
+      this.$router.push("/");
+    },
   },
 };
 </script>

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import { useNotesStore } from "./notesStore";
 import { useTagsStore } from "./tagsStore";
 
@@ -11,7 +11,7 @@ export const useUserStore = defineStore("user", {
       ? JSON.parse(localStorage.zettelkasten_user)
       : null,
     userError: false,
-    router: useRouter(),
+    // router: useRouter(),
   }),
   getters: {
     getUser: (state) => state.user,
@@ -40,10 +40,8 @@ export const useUserStore = defineStore("user", {
         }
 
         const { user, token } = await response.json();
-
+        console.log("user:", user);
         this.setUser(user, token);
-
-        this.router.push("/");
       } catch (error) {
         console.error("Error signing up", error);
       }
@@ -70,8 +68,6 @@ export const useUserStore = defineStore("user", {
 
         const { user, token } = await response.json();
         this.setUser(user, token);
-
-        this.router.push("/");
       } catch (error) {
         console.log("error:", error);
         console.error("Error logging in");

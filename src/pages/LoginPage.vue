@@ -4,7 +4,7 @@
       <h1>Login</h1>
       <form
         class="form-group d-flex flex-column"
-        @submit.prevent="login(loginForm.email, loginForm.password)"
+        @submit.prevent="loginSequence(loginForm)"
       >
         <label class="mb-3">
           <span>Email:</span>
@@ -49,6 +49,11 @@ export default {
   },
   methods: {
     ...mapActions(userStore, ["setUser", "login"]),
+    async loginSequence(loginForm) {
+      const { email, password } = loginForm;
+      await this.login(email, password);
+      this.$router.push("/");
+    },
   },
 };
 </script>
