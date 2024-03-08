@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { useRouter } from "vue-router";
 import { useNotesStore } from "./notesStore";
 import { useTagsStore } from "./tagsStore";
+import { http } from "./http";
 
 import { mapActions } from "pinia";
 
@@ -26,20 +27,13 @@ export const useUserStore = defineStore("user", {
         return;
       }
       try {
-        const response = await fetch(`${process.env.VUE_APP_SERVER}/signup`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, email, password }),
+        const { data } = await http.post(`/signup`, {
+          username,
+          email,
+          password,
         });
 
-        if (!response.ok) {
-          console.error("Error signing up");
-          return;
-        }
-
-        const { user, token } = await response.json();
+        const { user, token } = data;
 
         this.setUser(user, token);
 
@@ -54,21 +48,8 @@ export const useUserStore = defineStore("user", {
         return;
       }
       try {
-        const response = await fetch(`${process.env.VUE_APP_SERVER}/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-          console.log("response:", response);
-          console.error("Error logging in");
-          return;
-        }
-
-        const { user, token } = await response.json();
+        const { data } = await http.post(`/login`, { email, password });
+        const { user, token } = data;
         this.setUser(user, token);
 
         this.router.push("/");
@@ -81,23 +62,10 @@ export const useUserStore = defineStore("user", {
       const token = localStorage.zettelkasten_token;
       if (token) {
         try {
-          const response = await fetch(
-            `${process.env.VUE_APP_SERVER}/validate`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                token,
-              }),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to validate token");
-          }
-          return response.json();
+          const { data } = await http.post(`/validate`, {
+            token,
+          });
+          return data;
         } catch (error) {
           console.error("Error:", error);
         }
