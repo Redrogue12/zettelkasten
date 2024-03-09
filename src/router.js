@@ -4,6 +4,7 @@ import TagsPage from "./pages/TagsPage.vue";
 import LinksPage from "./pages/LinksPage.vue";
 import SignupPage from "./pages/SignupPage.vue";
 import LoginPage from "./pages/LoginPage.vue";
+import NotFoundPage from "./pages/NotFoundPage.vue";
 
 const routes = [
   {
@@ -31,11 +32,26 @@ const routes = [
     name: "login",
     component: LoginPage,
   },
+  { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFoundPage },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login", "/signup"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn =
+    localStorage.getItem("zettelkasten_user") &&
+    localStorage.getItem("zettelkasten_token");
+
+  if (authRequired && !loggedIn) {
+    return next("/login");
+  }
+
+  next();
 });
 
 export default router;

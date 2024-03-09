@@ -1,18 +1,11 @@
 <template>
-  <div class="container" v-if="error">
-    <h3>Failed to fetch notes</h3>
-  </div>
-  <div class="container h-100" v-else>
-    <p class="mt-3 mb-0 ml-3">Welcome, {{ user?.username }}!</p>
-    <div class="d-flex align-items-baseline">
-      <h1 class="m-3">Notes</h1>
-      <font-awesome-icon
-        class="pointer fa-xl"
-        icon="plus"
-        @click.stop="create = true"
-      />
-    </div>
-
+  <PageHeader
+    page-type="Notes"
+    :error="error"
+    :user="user"
+    :loading="loading"
+    @create-clicked="create = true"
+  >
     <div v-if="notes.length > 0" class="notes-container">
       <NoteCard
         v-for="(note, i) in notes"
@@ -45,7 +38,7 @@
     <Dialog v-if="delete" @close-dialog="deleted">
       <DeleteNote :note="selectedNote" @deleted="deleted" />
     </Dialog>
-  </div>
+  </PageHeader>
 </template>
 
 <script>
@@ -56,6 +49,7 @@ import {
   ViewNote,
   DeleteNote,
 } from "../components/Notes";
+import PageHeader from "../components/PageHeader";
 import Dialog from "../components/Dialog";
 
 import { useNotesStore as notesStore } from "../stores/notesStore";
@@ -65,6 +59,7 @@ import { mapState, mapActions } from "pinia";
 export default {
   name: "NotesPage",
   components: {
+    PageHeader,
     NoteCard,
     EditNote,
     CreateNote,
@@ -79,10 +74,12 @@ export default {
       create: false,
       view: false,
       delete: false,
+      loading: true,
     };
   },
   async created() {
-    this.fetchNotes(this.user?.user_id);
+    await this.fetchNotes(this.user?.user_id);
+    this.loading = false;
   },
   computed: {
     ...mapState(notesStore, { notes: "getNotes", error: "getError" }),
