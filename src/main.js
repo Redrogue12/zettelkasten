@@ -11,10 +11,11 @@ import {
   faPlus,
   faTrash,
   faTags,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faEdit, faLink, faTimes, faPlus, faTrash, faTags);
+library.add(faEdit, faLink, faTimes, faPlus, faTrash, faTags, faSpinner);
 
 const pinia = createPinia();
 
