@@ -20,9 +20,10 @@
       />
     </label>
   </div>
-  <p class="note-dates">
+  <p ref="editDateCreated">
     Created: {{ new Date(selectedNote.date_created).toLocaleDateString() }}
-    <br />
+  </p>
+  <p ref="editDateModified">
     Modified: {{ new Date(selectedNote.date_modified).toLocaleDateString() }}
   </p>
   <button
@@ -54,7 +55,7 @@ export default {
           typeof value === "object" &&
           "note_title" in value &&
           "note_text" in value &&
-          "id" in value &&
+          "note_id" in value &&
           "date_created" in value &&
           "date_modified" in value
         );
@@ -81,14 +82,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-group label {
-  display: flex;
-  width: 100%;
-}
-
-.form-group label span {
-  width: 70px;
-}
-</style>
