@@ -8,9 +8,11 @@ jest.mock("@/stores/notesStore", () => ({
   }),
 }));
 
-describe("EditNote", () => {
+describe("EditNote:", () => {
   let selectedNote;
+  let wrapper;
   beforeEach(() => {
+    const pinia = createPinia();
     selectedNote = {
       note_id: 1,
       note_title: "Test Note",
@@ -18,14 +20,17 @@ describe("EditNote", () => {
       date_created: "2021-01-01",
       date_modified: "2021-01-01",
     };
-  });
-  it("renders edit dialog correctly", () => {
-    const wrapper = shallowMount(EditNote, {
+    wrapper = shallowMount(EditNote, {
       propsData: {
         selectedNote,
       },
+      global: {
+        plugins: [pinia],
+      },
     });
+  });
 
+  it("Renders edit dialog correctly", () => {
     expect(wrapper.vm.$refs.titleInput.value).toBe(selectedNote.note_title);
     expect(wrapper.vm.$refs.textInput.value).toBe(selectedNote.note_text);
     expect(wrapper.vm.$refs.editDateCreated.innerHTML).toBe(
@@ -36,18 +41,7 @@ describe("EditNote", () => {
     );
   });
 
-  it('emits "edited" event when submitting form', () => {
-    const pinia = createPinia();
-
-    const wrapper = shallowMount(EditNote, {
-      propsData: {
-        selectedNote,
-      },
-      global: {
-        plugins: [pinia],
-      },
-    });
-
+  it('Emits "edited" event when submitting form', () => {
     wrapper.find("#edit-submit-button").trigger("click");
     expect(wrapper.emitted("edited")).toBeTruthy();
   });
