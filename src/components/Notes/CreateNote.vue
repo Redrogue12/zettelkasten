@@ -34,11 +34,11 @@ export default {
     return {
       note_title: "",
       note_text: "",
+      error: "",
     };
   },
   emits: ["created"],
   computed: {
-    ...mapState(notesStore, { error: "getError" }),
     ...mapState(userStore, { user: "getUser" }),
   },
   methods: {
