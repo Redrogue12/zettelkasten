@@ -2,30 +2,37 @@ import { shallowMount } from "@vue/test-utils";
 import { createPinia } from "pinia";
 
 import CreateNote from "@/components/Notes/CreateNote.vue";
-import { nextTick } from "vue";
+
+const mockStore = {
+  createNote: jest.fn(),
+};
 
 describe("Create Note", () => {
   let wrapper;
+  const pinia = createPinia();
+  pinia.use(() => mockStore);
   beforeEach(() => {
     wrapper = shallowMount(CreateNote, {
       global: {
-        plugins: [createPinia()],
+        plugins: [pinia],
       },
     });
   });
   it("renders correctly", () => {
     expect(wrapper.find("div#createDialog")).toBeTruthy();
-    expect(wrapper.vm.$refs.titleInput).toBeTruthy();
-    expect(wrapper.vm.$refs.textInput).toBeTruthy();
+    expect(wrapper.find("#titleInput")).toBeTruthy();
+    expect(wrapper.find("#textInput")).toBeTruthy();
   });
 
   it("should emit a create event when the form is submitted", async () => {
-    const title = "Test Title";
-    const text = "Test Text";
-    wrapper.vm.$refs.titleInput.value = title;
-    wrapper.vm.$refs.textInput.value = text;
+    const titleInput = wrapper.find("#titleInput");
+    const textInput = wrapper.find("#textInput");
+
+    await titleInput.setValue("Test Title");
+    await textInput.setValue("Test Text");
+
     await wrapper.find("button").trigger("click");
-    nextTick();
+    await wrapper.vm.$nextTick();
     expect(wrapper.emitted("created")).toBeTruthy();
   });
 });

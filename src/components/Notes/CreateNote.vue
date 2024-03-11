@@ -4,15 +4,15 @@
     <div class="form-group">
       <label class="mb-3">
         <span>Title:</span>
-        <input class="form-control" ref="titleInput" v-model="note_title" />
+        <input class="form-control" id="titleInput" v-model="note_title" />
       </label>
       <label class="mb-3">
         <span>Note:</span>
         <textarea
           class="form-control"
+          id="textInput"
           cols="50"
           rows="10"
-          ref="textInput"
           v-model="note_text"
         />
       </label>
@@ -45,6 +45,10 @@ export default {
     ...mapActions(notesStore, ["createNote"]),
     async onCreate() {
       const { note_title, note_text, user } = this;
+      if (!note_title || !note_text) {
+        this.error = "Please fill in all fields";
+        return;
+      }
       await this.createNote(note_title, note_text, user?.user_id);
       this.$emit("created");
     },

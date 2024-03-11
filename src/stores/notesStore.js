@@ -73,15 +73,17 @@ export const useNotesStore = defineStore("notes", {
 
         if (!response.ok) {
           this.notesError = "Failed to create note";
-          throw new Error("Failed to creat enote");
+          return Promise.reject("Failed to create note");
         } else {
           console.log("Note created successfully");
           const note = await response.json();
           this.pushNote(note);
+          return Promise.resolve(note);
         }
       } catch (error) {
         this.noteError = "Failed to create note";
         console.error(error);
+        return Promise.reject("Failed to create note");
       }
     },
     async editNote(note) {
