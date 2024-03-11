@@ -26,6 +26,9 @@
   <p ref="editDateModified">
     Modified: {{ new Date(selectedNote.date_modified).toLocaleDateString() }}
   </p>
+  <div v-if="error" id="edit-note-error" class="alert alert-danger mt-3">
+    {{ this.error }}
+  </div>
   <button
     class="btn btn-success centered-btn"
     id="edit-submit-button"
@@ -65,6 +68,7 @@ export default {
   data() {
     return {
       localNote: { ...this.selectedNote },
+      error: "",
     };
   },
   emits: ["edited"],
@@ -75,9 +79,17 @@ export default {
   },
   methods: {
     ...mapActions(notesStore, ["editNote"]),
-    onEdit(note) {
-      this.editNote(note);
-      this.$emit("edited");
+    async onEdit(note) {
+      if (!note.note_title || !note.note_text) {
+        this.error = "Title and note are required.";
+        return;
+      }
+      try {
+        await this.editNote(note);
+        this.$emit("edited");
+      } catch (error) {
+        this.error = error.message;
+      }
     },
   },
 };
