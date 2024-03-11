@@ -106,14 +106,16 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to update note");
-        } else console.log("Note updated successfully");
+          return Promise.reject("Failed to update note");
+        }
 
         const result = await response.json();
         const index = this.notes.findIndex((n) => n.id === id);
         this.notes[index] = result;
+        return Promise.resolve(result);
       } catch (error) {
         console.error(error);
+        return Promise.reject("Failed to update note");
       }
     },
     async deleteNote(id) {
