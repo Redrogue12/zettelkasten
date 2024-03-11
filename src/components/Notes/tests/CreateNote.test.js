@@ -34,6 +34,7 @@ describe("Create Note", () => {
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted("created")).toBeTruthy();
+    expect(wrapper.find("div#create-note-error").exists()).toBe(false);
   });
 
   it("should not emit a create event when the form is submitted with empty title", async () => {
@@ -46,5 +47,8 @@ describe("Create Note", () => {
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted("created")).toBeFalsy();
+    expect(wrapper.find("div#create-note-error").text()).toBe(
+      "Please fill in all fields"
+    );
   });
 });

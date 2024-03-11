@@ -17,7 +17,9 @@
         />
       </label>
     </div>
-    <div v-if="error" class="alert alert-danger mt-3">{{ this.error }}</div>
+    <div v-if="error" id="create-note-error" class="alert alert-danger mt-3">
+      {{ this.error }}
+    </div>
     <button class="btn btn-success centered-btn" @click.stop="onCreate">
       Submit
     </button>
