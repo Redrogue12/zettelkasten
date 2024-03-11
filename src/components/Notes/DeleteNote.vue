@@ -1,16 +1,16 @@
 <template>
-  <div class="d-flex flex-column justify-content-between h-100 flex-grow-1">
+  <div
+    id="deleteNote"
+    class="d-flex flex-column justify-content-between h-100 flex-grow-1"
+  >
     <h2>
       Are you sure you want to delete this note: "{{ note?.note_title }}"?
     </h2>
+    <div v-if="error" id="delete-note-error" class="alert alert-danger mt-3">
+      {{ this.error }}
+    </div>
     <div class="d-flex justify-content-center">
-      <button
-        class="btn btn-danger"
-        @click.stop="
-          deleteNote(note.note_id);
-          $emit('deleted');
-        "
-      >
+      <button class="btn btn-danger" @click.stop="onDelete(note.note_id)">
         Yes
       </button>
     </div>
@@ -28,8 +28,25 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      error: "",
+    };
+  },
   methods: {
     ...mapActions(notesStore, ["deleteNote"]),
+    async onDelete(noteId) {
+      if (!noteId) {
+        this.error = "Note ID is required.";
+        return;
+      }
+      try {
+        await this.deleteNote(noteId);
+        this.$emit("deleted");
+      } catch (error) {
+        this.error = "An error occurred while deleting the note.";
+      }
+    },
   },
 };
 </script>

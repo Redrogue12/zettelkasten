@@ -131,12 +131,13 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (response.status === 204) {
-          console.log("note deleted successfully");
           const index = this.notes.indexOf((note) => note.note_id === id);
           this.notes.splice(index, 1);
+          return Promise.resolve("Note deleted successfully");
         }
       } catch (error) {
         console.error(error);
+        return Promise.reject("Failed to delete note");
       }
     },
     async fetchRelatedNotes(id) {
