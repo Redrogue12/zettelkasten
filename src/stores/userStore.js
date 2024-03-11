@@ -63,18 +63,15 @@ export const useUserStore = defineStore("user", {
         });
 
         if (!response.ok) {
-          console.log("response:", response);
-          console.error("Error logging in");
-          return;
+          console.error("response:", response);
+          return Promise.reject("Error logging in");
         }
 
         const { user, token } = await response.json();
         this.setUser(user, token);
-
-        this.router.push("/");
+        return Promise.resolve("Logged in");
       } catch (error) {
-        console.log("error:", error);
-        console.error("Error logging in");
+        return Promise.reject("Error logging in");
       }
     },
     async validateToken() {

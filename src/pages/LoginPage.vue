@@ -4,7 +4,7 @@
       <h1>Login</h1>
       <form
         class="form-group d-flex flex-column"
-        @submit.prevent="login(loginForm.email, loginForm.password)"
+        @submit.prevent="onLogin(loginForm.email, loginForm.password)"
       >
         <label class="mb-3">
           <span>Email:</span>
@@ -27,6 +27,10 @@
           />
         </label>
 
+        <p v-if="error" class="alert alert-danger mt-3">
+          {{ error }}
+        </p>
+
         <button class="btn btn-primary centered-btn" type="submit">
           Login
         </button>
@@ -45,10 +49,19 @@ export default {
         email: "",
         password: "",
       },
+      error: "",
     };
   },
   methods: {
     ...mapActions(userStore, ["setUser", "login"]),
+    async onLogin(email, password) {
+      try {
+        await this.login(email, password);
+        this.$router.push("/");
+      } catch (error) {
+        this.error = error;
+      }
+    },
   },
 };
 </script>
