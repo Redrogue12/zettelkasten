@@ -4,10 +4,15 @@ import { createPinia } from "pinia";
 import CreateNote from "@/components/Notes/CreateNote.vue";
 
 const mockStore = {
+  user: {
+    username: "test",
+    email: "abc@gmail.com",
+    user_id: "test",
+  },
   createNote: jest.fn(),
 };
 
-describe("Create Note", () => {
+describe("Create Note.vue", () => {
   let wrapper;
   const pinia = createPinia();
   pinia.use(() => mockStore);
@@ -18,13 +23,13 @@ describe("Create Note", () => {
       },
     });
   });
-  it("renders correctly", () => {
+  it("Renders CreateNote.vue correctly", () => {
     expect(wrapper.find("div#createDialog")).toBeTruthy();
     expect(wrapper.find("#titleInput")).toBeTruthy();
     expect(wrapper.find("#textInput")).toBeTruthy();
   });
 
-  it("should emit a create event when the form is submitted", async () => {
+  it("Should emit a create event when the form is submitted", async () => {
     const titleInput = wrapper.find("#titleInput");
     const textInput = wrapper.find("#textInput");
 
@@ -33,11 +38,16 @@ describe("Create Note", () => {
 
     await wrapper.find("button").trigger("click");
     await wrapper.vm.$nextTick();
-    expect(wrapper.emitted("created")).toBeTruthy();
     expect(wrapper.find("div#create-note-error").exists()).toBe(false);
+    expect(wrapper.emitted("created")).toBeTruthy();
+    expect(mockStore.createNote).toHaveBeenCalledWith(
+      "Test Title",
+      "Test Text",
+      "test"
+    );
   });
 
-  it("should not emit a create event when the form is submitted with empty title", async () => {
+  it("Should not emit a create event when the form is submitted with empty title", async () => {
     const titleInput = wrapper.find("#titleInput");
     const textInput = wrapper.find("#textInput");
 
