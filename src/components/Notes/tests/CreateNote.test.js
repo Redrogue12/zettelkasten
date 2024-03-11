@@ -37,7 +37,6 @@ describe("Create Note.vue", () => {
     await textInput.setValue("Test Text");
 
     await wrapper.find("button").trigger("click");
-    await wrapper.vm.$nextTick();
     expect(wrapper.find("div#create-note-error").exists()).toBe(false);
     expect(wrapper.emitted("created")).toBeTruthy();
     expect(mockStore.createNote).toHaveBeenCalledWith(
@@ -55,7 +54,6 @@ describe("Create Note.vue", () => {
     await textInput.setValue("Test Text");
 
     await wrapper.find("button").trigger("click");
-    await wrapper.vm.$nextTick();
     expect(wrapper.emitted("created")).toBeFalsy();
     expect(wrapper.find("div#create-note-error").text()).toBe(
       "Please fill in all fields"
