@@ -35,4 +35,16 @@ describe("Create Note", () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted("created")).toBeTruthy();
   });
+
+  it("should not emit a create event when the form is submitted with empty title", async () => {
+    const titleInput = wrapper.find("#titleInput");
+    const textInput = wrapper.find("#textInput");
+
+    await titleInput.setValue("");
+    await textInput.setValue("Test Text");
+
+    await wrapper.find("button").trigger("click");
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted("created")).toBeFalsy();
+  });
 });
