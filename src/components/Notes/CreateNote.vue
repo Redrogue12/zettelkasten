@@ -1,5 +1,5 @@
 <template>
-  <div id="createNote">
+  <div id="createNote" class="d-flex flex-column">
     <h2>Create Note</h2>
     <div class="form-group">
       <label class="mb-3">
@@ -18,13 +18,7 @@
       </label>
     </div>
     <div v-if="error" class="alert alert-danger mt-3">{{ this.error }}</div>
-    <button
-      class="btn btn-success centered-btn"
-      @click.stop="
-        createNote(note_title, note_text, user?.user_id);
-        created();
-      "
-    >
+    <button class="btn btn-success centered-btn" @click.stop="onCreate">
       Submit
     </button>
   </div>
@@ -49,7 +43,9 @@ export default {
   },
   methods: {
     ...mapActions(notesStore, ["createNote"]),
-    created() {
+    async onCreate() {
+      const { note_title, note_text, user } = this;
+      await this.createNote(note_title, note_text, user?.user_id);
       this.$emit("created");
     },
   },
