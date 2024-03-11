@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex">
     <h2>{{ note?.note_title }}</h2>
-    <router-link :to="`/links/${note?.id}`">
+    <router-link :to="`/links/${note?.note_id}`">
       <font-awesome-icon
         class="dialog-link-icon fa-lg ml-3 mt-2 pointer"
         icon="link"

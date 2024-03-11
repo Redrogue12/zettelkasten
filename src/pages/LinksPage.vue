@@ -14,9 +14,9 @@
         <NoteCard
           v-for="(n, i) in relatedNotes"
           :index="i"
-          :key="n.id"
+          :key="n.note_id"
           :note="n"
-          @click="unlinkNotes(note.note_id, n.id, i)"
+          @click="unlinkNotes(note.note_id, n.note_id, i)"
         />
       </div>
     </div>
@@ -32,9 +32,9 @@
       <NoteCard
         v-for="(n, i) in filteredNotes"
         :index="i"
-        :key="n.id"
+        :key="n.note_id"
         :note="n"
-        @click="linkNotes(note.note_id, n.id)"
+        @click="linkNotes(note.note_id, n.note_id)"
       />
     </div>
   </div>
@@ -71,8 +71,8 @@ export default {
       const { id } = this.$route.params;
       return this.notes.filter(
         (n) =>
-          n.id !== id &&
-          !this.relatedNotes.some((rn) => rn.id === n.id) &&
+          n.note_id !== id &&
+          !this.relatedNotes.some((rn) => rn.note_id === n.note_id) &&
           n.note_title?.toLowerCase().includes(this.search.toLowerCase())
       );
     },
