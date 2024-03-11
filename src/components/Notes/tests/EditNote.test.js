@@ -2,17 +2,16 @@ import { shallowMount } from "@vue/test-utils";
 import EditNote from "@/components/Notes/EditNote.vue";
 import { createPinia } from "pinia";
 
-jest.mock("@/stores/notesStore", () => ({
-  useNotesStore: jest.fn().mockReturnValue({
-    editNote: jest.fn().mockResolvedValueOnce(),
-  }),
-}));
+const mockStore = {
+  editNote: jest.fn(),
+};
 
 describe("EditNote:", () => {
   let selectedNote;
   let wrapper;
   beforeEach(() => {
     const pinia = createPinia();
+    pinia.use(() => mockStore);
     selectedNote = {
       note_id: 1,
       note_title: "Test Note",
@@ -41,8 +40,26 @@ describe("EditNote:", () => {
     );
   });
 
-  it('Emits "edited" event when submitting form', () => {
-    wrapper.find("#edit-submit-button").trigger("click");
+  it('Emits "edited" event when submitting form', async () => {
+    await wrapper.find("#edit-submit-button").trigger("click");
+    expect(wrapper.find("div#edit-note-error").exists()).toBe(false);
     expect(wrapper.emitted("edited")).toBeTruthy();
+    expect(mockStore.editNote).toHaveBeenCalledWith({
+      note_title: "Test Note",
+      note_text: "This is a test note",
+      note_id: 1,
+      date_created: "2021-01-01",
+      date_modified: "2021-01-01",
+    });
+  });
+
+  it("Does not emit an event when submitting form with empty title", async () => {
+    wrapper.vm.localNote.note_title = "";
+    await wrapper.find("#edit-submit-button").trigger("click");
+    expect(wrapper.vm.$refs.titleInput.value).toBe("");
+    expect(wrapper.emitted("edited")).toBeFalsy();
+    expect(wrapper.find("div#edit-note-error").text()).toBe(
+      "Title and note are required."
+    );
   });
 });
