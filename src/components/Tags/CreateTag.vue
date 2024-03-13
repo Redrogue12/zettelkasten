@@ -1,5 +1,5 @@
 <template>
-  <h2>Create a Tag</h2>
+  <h2>Create Tag</h2>
   <div class="form-group">
     <label class="mb-3 w-100">
       <span>Title:</span>
@@ -9,10 +9,7 @@
   <div v-if="error" class="alert alert-danger mt-3">{{ error }}</div>
   <button
     class="btn btn-success centered-btn"
-    @click.stop="
-      createTag(tagName, user.user_id);
-      $emit('created');
-    "
+    @click.stop="onCreateTag(tagName, user.user_id)"
   >
     Submit
   </button>
@@ -27,6 +24,7 @@ export default {
   data() {
     return {
       tagName: "",
+      error: "",
     };
   },
   emits: ["created"],
@@ -36,11 +34,24 @@ export default {
     }
   },
   computed: {
-    ...mapState(tagsStore, ["error"]),
     ...mapState(userStore, { user: "getUser" }),
   },
   methods: {
     ...mapActions(tagsStore, ["createTag"]),
+    async onCreateTag(tagName, userId) {
+      if (!tagName) {
+        this.error = "Tag name is required";
+        return;
+      }
+      await this.createTag(tagName, userId)
+        .then(() => {
+          this.$emit("created");
+        })
+        .catch((error) => {
+          console.log("error:", error);
+          this.error = error.message;
+        });
+    },
   },
 };
 </script>

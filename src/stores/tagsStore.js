@@ -31,12 +31,13 @@ export const useTagsStore = defineStore("Tags", {
         this.error = true;
       }
     },
-    async createTag(tag_name, id) {
-      if (!tag_name || !id) return console.error("Invalid tag");
+    async createTag(tag_name, user_id) {
+      if (!tag_name || !user_id)
+        return Promise.reject("Missing tag name and/or id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/tags/id/${id}`,
+          `${process.env.VUE_APP_SERVER}/tags/id/${user_id}`,
           {
             method: "POST",
             headers: {
@@ -50,13 +51,14 @@ export const useTagsStore = defineStore("Tags", {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to create tag");
+          throw Promise.reject("Failed to create tag");
         }
 
         const newTag = await response.json();
         this.tags.push(newTag);
+        return Promise.resolve("Tag created successfully");
       } catch (error) {
-        console.error(error);
+        return Promise.reject("Failed to create tag");
       }
     },
     async editTag(tag_name, id) {
