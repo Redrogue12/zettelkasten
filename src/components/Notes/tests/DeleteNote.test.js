@@ -7,7 +7,7 @@ const mockStore = {
   deleteNote: jest.fn(),
 };
 
-describe("Create Note.vue", () => {
+describe("Delete Note.vue", () => {
   let wrapper;
 
   const note = {
