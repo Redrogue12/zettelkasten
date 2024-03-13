@@ -1,44 +1,48 @@
 <template>
-  <PageHeader
-    page-type="Notes"
-    :error="error"
-    :user="user"
-    :loading="loading"
-    @create-clicked="create = true"
-  >
-    <div v-if="notes.length > 0" class="notes-container">
-      <NoteCard
-        v-for="(note, i) in notes"
-        :index="i"
-        :key="note.note_id"
-        :note="note"
-        @click="viewNote(note)"
-      />
-    </div>
-    <div class="center-content" v-else>
-      <h3 class="ml-3 text-muted">Click + to start writing your first note</h3>
-    </div>
+  <div id="notes-page">
+    <PageHeader
+      page-type="Notes"
+      :error="error"
+      :user="user"
+      :loading="loading"
+      @create-clicked="create = true"
+    >
+      <div v-if="notes.length > 0" class="notes-container">
+        <NoteCard
+          v-for="(note, i) in notes"
+          :index="i"
+          :key="note.note_id"
+          :note="note"
+          @click="viewNote(note)"
+        />
+      </div>
+      <div class="center-content" v-else>
+        <h3 class="ml-3 text-muted">
+          Click + to start writing your first note
+        </h3>
+      </div>
 
-    <Dialog v-if="view" @close-dialog="view = false">
-      <ViewNote
-        :note="selectedNote"
-        @edit-dialog="editDialog"
-        @deleted="toggleDelete"
-      />
-    </Dialog>
+      <Dialog v-if="view" @close-dialog="view = false">
+        <ViewNote
+          :note="selectedNote"
+          @edit-dialog="editDialog"
+          @deleted="toggleDelete"
+        />
+      </Dialog>
 
-    <Dialog v-if="edit" @close-dialog="closeEdit">
-      <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
-    </Dialog>
-    <Dialog v-if="create" @close-dialog="create = false">
-      <CreateNote @created="onNoteCreated" />
-    </Dialog>
+      <Dialog v-if="edit" @close-dialog="closeEdit">
+        <EditNote :selectedNote="selectedNote" @edited="closeEdit" />
+      </Dialog>
+      <Dialog v-if="create" @close-dialog="create = false">
+        <CreateNote @created="onNoteCreated" />
+      </Dialog>
 
-    <!-- eslint-disable -->
-    <Dialog v-if="delete" @close-dialog="deleted">
-      <DeleteNote :note="selectedNote" @deleted="deleted" />
-    </Dialog>
-  </PageHeader>
+      <!-- eslint-disable -->
+      <Dialog v-if="delete" @close-dialog="deleted">
+        <DeleteNote :note="selectedNote" @deleted="deleted" />
+      </Dialog>
+    </PageHeader>
+  </div>
 </template>
 
 <script>
@@ -75,14 +79,23 @@ export default {
       view: false,
       delete: false,
       loading: true,
+      error: false,
     };
   },
   async created() {
-    await this.fetchNotes(this.user?.user_id);
-    this.loading = false;
+    if (!this.user?.user_id) {
+      this.error = true;
+    }
+    await this.fetchNotes(this.user?.user_id)
+      ?.then(() => {
+        this.loading = false;
+      })
+      .catch(() => {
+        this.error = true;
+      });
   },
   computed: {
-    ...mapState(notesStore, { notes: "getNotes", error: "getError" }),
+    ...mapState(notesStore, { notes: "getNotes" }),
     ...mapState(userStore, { user: "getUser" }),
   },
   methods: {

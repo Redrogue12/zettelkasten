@@ -141,7 +141,7 @@ export const useNotesStore = defineStore("notes", {
       }
     },
     async fetchRelatedNotes(id) {
-      if (!id) return console.error("Invalid note id");
+      if (!id) return Promise.reject("Invalid note id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -154,12 +154,13 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return Promise.reject("Failed to fetch related notes");
         }
 
         this.relatedNotes = await response.json();
+        return Promise.resolve(this.relatedNotes);
       } catch (error) {
-        console.error(error);
+        return Promise.reject("Failed to fetch related notes");
       }
     },
     pushTagToNote(tag, note_id) {
