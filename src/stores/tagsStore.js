@@ -62,7 +62,7 @@ export const useTagsStore = defineStore("Tags", {
       }
     },
     async editTag(tag_name, id) {
-      if (!tag_name || !id) return console.error("Invalid tag");
+      if (!tag_name || !id) return Promise.reject("Invalid tag name and/or id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -80,14 +80,14 @@ export const useTagsStore = defineStore("Tags", {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to update tag");
-        } else console.log("Tag updated successfully");
-
+          return Promise.reject("Failed to update tag");
+        }
         const result = await response.json();
         const index = this.tags.findIndex((t) => t.tag_id === id);
         this.tags[index] = result;
+        return Promise.resolve("Tag updated successfully");
       } catch (error) {
-        console.error(error);
+        return Promise.reject("Failed to update tag");
       }
     },
     async deleteTag(id) {
