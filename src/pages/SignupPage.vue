@@ -20,6 +20,7 @@
           <span>Email:</span>
           <input
             class="form-control"
+            type="email"
             v-model="signupForm.email"
             placeholder="Email"
             required
