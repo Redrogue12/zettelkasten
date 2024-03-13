@@ -91,7 +91,7 @@ export const useTagsStore = defineStore("Tags", {
       }
     },
     async deleteTag(id) {
-      if (!id) return console.error("No tag id provided");
+      if (!id) return Promise.reject("Invalid tag id");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -106,12 +106,13 @@ export const useTagsStore = defineStore("Tags", {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to delete tag");
-        } else console.log("Tag deleted successfully");
+          return Promise.reject("Failed to delete tag");
+        }
 
         this.tags = this.tags.filter((t) => t.tag_id !== id);
+        return Promise.resolve("Tag deleted successfully");
       } catch (error) {
-        console.error(error);
+        return Promise.reject("Failed to delete tag");
       }
     },
     async connectTag(tag, note_id) {

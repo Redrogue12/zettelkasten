@@ -4,14 +4,11 @@
       Are you sure you want to delete this tag:
       <strong>"{{ tag?.tag_name }}"</strong>?
     </h2>
+    <div v-if="error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
     <div class="d-flex justify-content-center">
-      <button
-        class="btn btn-danger"
-        @click.stop="
-          deleteTag(tag.tag_id);
-          $emit('deleted');
-        "
-      >
+      <button class="btn btn-danger" @click.stop="onDeleteTag(tag.tag_id)">
         Yes
       </button>
     </div>
@@ -29,8 +26,23 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      error: "",
+    };
+  },
   methods: {
     ...mapActions(tagsStore, ["deleteTag"]),
+    async onDeleteTag(tagId) {
+      if (!tagId) return;
+      await this.deleteTag(tagId)
+        .then(() => {
+          this.$emit("close");
+        })
+        .catch(() => {
+          this.error = "Error deleting tag";
+        });
+    },
   },
 };
 </script>
