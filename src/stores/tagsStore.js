@@ -114,7 +114,7 @@ export const useTagsStore = defineStore("Tags", {
     },
     async connectTag(tag, note_id) {
       if (!tag || !tag.tag_id || !note_id)
-        return console.error("Invalid tag or note id");
+        return Promise.reject("Invalid tag and/or note id");
       const { tag_id } = tag;
       try {
         const token = localStorage.getItem("zettelkasten_token");
@@ -135,15 +135,14 @@ export const useTagsStore = defineStore("Tags", {
         );
 
         if (response.status === 201) {
-          console.log("Tag linked successfully");
           const notesStore = useNotesStore();
           notesStore.pushTagToNote(tag, note_id);
+          return Promise.resolve("Tag linked successfully");
         } else {
-          console.log("Failed to link tag");
-          throw new Error("Failed to link tag");
+          return Promise.reject("Failed to link tag");
         }
       } catch (error) {
-        console.error("tags/link error", error);
+        return Promise.reject("Failed to link tag");
       }
     },
     resetTagsStore() {

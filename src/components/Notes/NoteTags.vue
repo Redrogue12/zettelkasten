@@ -1,26 +1,31 @@
 <template>
-  <div v-if="error">
-    <h2>Failed to fetch tags</h2>
-  </div>
-  <div v-else>
-    <h2>Tags</h2>
-    <div class="form-group">
-      <input
-        ref="tagSearchInput"
-        class="form-control"
-        type="text"
-        placeholder="Search tags..."
-        v-model="tagSearch"
-      />
+  <div id="noteTags">
+    <div v-if="fetchFailed">
+      <h2>Failed to fetch tags</h2>
     </div>
-    <hr />
-    <div class="note-tags-tags-container">
-      <TagPill
-        v-for="tag in filteredTags"
-        :key="tag.tag_id"
-        :tag="tag"
-        @click.stop="onConnect(tag, note.note_id)"
-      />
+    <div v-else>
+      <h2>Tags</h2>
+      <div class="form-group">
+        <input
+          ref="tagSearchInput"
+          class="form-control"
+          type="text"
+          placeholder="Search tags..."
+          v-model="tagSearch"
+        />
+        <div v-if="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+      </div>
+      <hr />
+      <div id="tags-container">
+        <TagPill
+          v-for="tag in filteredTags"
+          :key="tag.tag_id"
+          :tag="tag"
+          @click.stop="onConnect(tag, note.note_id)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -39,6 +44,8 @@ export default {
   data() {
     return {
       tagSearch: "",
+      fetchFailed: false,
+      error: "",
     };
   },
   props: {
@@ -52,10 +59,10 @@ export default {
       this.$refs.tagSearchInput.focus();
     }
     if (this.user?.user_id) await this.fetchTags(this.user.user_id);
-    else console.error("User not found in NoteTags.vue");
+    else this.fetchFailed = true;
   },
   computed: {
-    ...mapState(tagsStore, ["tags", "error"]),
+    ...mapState(tagsStore, ["tags"]),
     ...mapState(userStore, { user: "getUser" }),
     tagIds() {
       return this.note?.tags.map((tag) => tag.tag_id) || [];
@@ -71,16 +78,22 @@ export default {
   },
   methods: {
     ...mapActions(tagsStore, ["fetchTags", "connectTag"]),
-    onConnect(tag, note_id) {
-      this.connectTag(tag, note_id);
-      this.$emit("tag-linked");
+    async onConnect(tag, note_id) {
+      if (!tag || !note_id) return;
+      try {
+        await this.connectTag(tag, note_id);
+        this.$emit("tag-linked");
+      } catch (error) {
+        console.error(error);
+        this.error = "Failed to connect tag";
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-.tags-container {
+#tags-container {
   display: flex;
   flex-wrap: wrap;
   overflow-y: auto;
