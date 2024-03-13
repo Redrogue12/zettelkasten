@@ -4,12 +4,10 @@ import axios from "axios";
 export const useNotesStore = defineStore("notes", {
   state: () => ({
     notes: [],
-    notesError: false,
     relatedNotes: [],
   }),
   getters: {
     getNotes: (state) => state.notes,
-    getError: (state) => state.notesError,
   },
   actions: {
     getNote(id) {
@@ -27,9 +25,9 @@ export const useNotesStore = defineStore("notes", {
       this.relatedNotes.splice(index, 1);
     },
     async fetchNotes(user_id) {
-      if (!user_id) return console.error("Invalid user id");
+      if (!user_id) return Promise.reject("Invalid user id");
 
-      if (this.notes.length > 0) return;
+      if (this.notes.length > 0) return Promise.resolve(this.notes);
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -42,18 +40,17 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          return Promise.reject("Failed to fetch notes");
         }
 
         this.notes = await response.json();
-        if (this.notesError) this.notesError = false;
+        return Promise.resolve(this.notes);
       } catch (error) {
-        console.error("Failed to fetch notes");
-        this.notesError = true;
+        return Promise.reject("Failed to fetch notes");
       }
     },
     async createNote(note_title, note_text, user_id) {
-      if (!note_title || !note_text) return console.error("Invalid note");
+      if (!note_title || !note_text) return Promise.reject("Invalid note data");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -72,22 +69,21 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (!response.ok) {
-          this.notesError = "Failed to create note";
           return Promise.reject("Failed to create note");
         } else {
-          console.log("Note created successfully");
           const note = await response.json();
           this.pushNote(note);
           return Promise.resolve(note);
         }
       } catch (error) {
-        this.noteError = "Failed to create note";
-        console.error(error);
         return Promise.reject("Failed to create note");
       }
     },
     async editNote(note) {
       const { id, note_title, note_text } = note;
+      if (!id || !note_title || !note_text) {
+        return Promise.reject("Invalid note data");
+      }
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
@@ -114,7 +110,6 @@ export const useNotesStore = defineStore("notes", {
         this.notes[index] = result;
         return Promise.resolve(result);
       } catch (error) {
-        console.error(error);
         return Promise.reject("Failed to update note");
       }
     },
@@ -170,7 +165,9 @@ export const useNotesStore = defineStore("notes", {
       this.notes[index] = note;
     },
     async linkNotes(id1, id2) {
-      if (this.relatedNotes.find((note) => note.note_id === id2)) return;
+      if (!id1 || !id2) return Promise.reject("Invalid note ids");
+      if (this.relatedNotes.find((note) => note.note_id === id2))
+        return Promise.resolve("Notes already linked");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.post(
@@ -187,25 +184,26 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (response.status === 201) {
-          console.log("Notes linked successfully");
           const linkedNote = this.getNote(id2);
           this.pushLinkedNote(linkedNote);
+          return Promise.resolve("Notes linked successfully");
         } else {
-          console.log("Failed to link notes");
+          return Promise.reject("Failed to link notes");
         }
       } catch (error) {
-        console.error(error);
+        return Promise.reject("Failed to link notes");
       }
     },
     async unlinkNotes(id1, id2, index) {
+      if (!id1 || !id2 || index) return Promise.reject("Invalid note ids");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.delete(
           `${process.env.VUE_APP_SERVER}/links`,
           {
             params: {
-              id1: id1,
-              id2: id2,
+              id1,
+              id2,
             },
           },
           {
@@ -216,18 +214,17 @@ export const useNotesStore = defineStore("notes", {
         );
 
         if (response.status === 204) {
-          console.log("Notes unlinked successfully");
           this.removeLinkedNote(index);
+          return Promise.resolve("Notes unlinked successfully");
         } else {
-          console.log("Failed to link notes");
+          return Promise.reject("Failed to unlink notes");
         }
       } catch (error) {
-        console.error(error);
+        return Promise.reject("Failed to unlink notes");
       }
     },
     resetNotesStore() {
       this.notes = [];
-      this.notesError = false;
       this.relatedNotes = [];
     },
   },

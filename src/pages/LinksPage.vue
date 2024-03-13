@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <div>
+  <div id="links-page" class="container">
+    <div id="links-page-note">
       <h1>{{ note?.note_title }}</h1>
       <div class="notes-container">
         <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" />
@@ -8,11 +8,12 @@
       <p>{{ note?.note_text }}</p>
     </div>
     <hr />
-    <div>
+    <div id="links-page-related-notes">
       <h5>Related Notes</h5>
-      <div class="notes-container">
+      <div class="related-notes-container">
         <NoteCard
           v-for="(n, i) in relatedNotes"
+          class="related-note"
           :index="i"
           :key="n.id"
           :note="n"
@@ -68,7 +69,7 @@ export default {
       user: "getUser",
     }),
     filteredNotes() {
-      const { id } = this.$route.params;
+      const { id } = this.$route?.params;
       return this.notes.filter(
         (n) =>
           n.id !== id &&
