@@ -5,7 +5,6 @@ import { mapState } from "pinia";
 export const useTagsStore = defineStore("Tags", {
   state: () => ({
     tags: [],
-    error: false,
   }),
   getters: {
     ...mapState(useNotesStore, ["notes"]),
@@ -13,7 +12,7 @@ export const useTagsStore = defineStore("Tags", {
   },
   actions: {
     async fetchTags(user_id) {
-      if (!user_id) return console.error("Invalid user id");
+      if (!user_id) return Promise.reject("Invalid user id");
       if (this.tags.length > 0) return;
       try {
         const response = await fetch(
@@ -21,14 +20,13 @@ export const useTagsStore = defineStore("Tags", {
         );
 
         if (!response.ok) {
-          this.error = true;
-          throw new Error("Failed to fetch tags");
+          return Promise.reject("Failed to fetch tags");
         }
 
         this.tags = await response.json();
+        return Promise.resolve("Tags fetched successfully");
       } catch (error) {
-        console.error("tags error", error);
-        this.error = true;
+        return Promise.reject("Failed to fetch tags");
       }
     },
     async createTag(tag_name, user_id) {
