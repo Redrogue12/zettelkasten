@@ -1,14 +1,16 @@
 <template>
-  <div class="d-flex">
+  <div id="vueNote" class="d-flex">
     <h2>{{ note?.note_title }}</h2>
-    <router-link :to="`/links/${note?.id}`">
+    <router-link :to="`/links/${note?.note_id}`">
       <font-awesome-icon
-        class="dialog-link-icon fa-lg ml-3 mt-2 pointer"
+        id="view-note-link-icon"
+        class="fa-lg ml-3 mt-2 pointer"
         icon="link"
       />
     </router-link>
     <font-awesome-icon
-      class="dialog-link-icon fa-lg ml-3 mt-2 pointer"
+      id="view-note-tag-icon"
+      class="fa-lg ml-3 mt-2 pointer"
       icon="tags"
       @click.stop="clickTag"
     />
@@ -19,15 +21,26 @@
   <p class="d-inline">{{ note?.note_text }}</p>
   <div class="d-flex justify-content-end">
     <font-awesome-icon
-      class="dialog-edit-icon fa-lg pointer mr-3"
+      id="view-note-edit-icon"
+      class="fa-lg pointer mr-3"
       icon="edit"
       @click.stop="editDialog(note)"
     />
     <font-awesome-icon
-      class="dialog-edit-icon fa-lg pointer"
+      id="view-note-trash-icon"
+      class="fa-lg pointer"
       icon="trash"
       @click.stop="$emit('deleted')"
     />
+  </div>
+  <hr />
+  <div class="d-flex justify-content-between">
+    <span id="view-note-date-created">
+      Created: {{ new Date(note.date_created).toLocaleDateString() }}
+    </span>
+    <span id="view-note-date-modified">
+      Modified: {{ new Date(note.date_modified).toLocaleDateString() }}
+    </span>
   </div>
   <hr />
   <h5>Linked Notes</h5>
