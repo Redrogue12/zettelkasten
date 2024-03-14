@@ -24,7 +24,7 @@ export const useNotesStore = defineStore("notes", {
     removeLinkedNote(index) {
       this.relatedNotes.splice(index, 1);
     },
-    async fetchNotes(user_id) {
+    async fetchNotes(user_id, fetchRelated = false) {
       if (!user_id) return Promise.reject("Invalid user id");
 
       if (this.notes.length > 0) return Promise.resolve(this.notes);
@@ -44,6 +44,12 @@ export const useNotesStore = defineStore("notes", {
         }
 
         this.notes = await response.json();
+        if (fetchRelated) {
+          const relatedNotes = await this.fetchRelatedNotes(
+            this.notes[0].note_id
+          );
+          this.relatedNotes = relatedNotes;
+        }
         return Promise.resolve(this.notes);
       } catch (error) {
         return Promise.reject("Failed to fetch notes");

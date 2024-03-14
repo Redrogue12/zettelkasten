@@ -29,9 +29,10 @@
       type="text"
       v-model="search"
     />
-    <div class="notes-container">
+    <div id="links-page-filtered-notes" class="notes-container">
       <NoteCard
         v-for="(n, i) in filteredNotes"
+        class="filtered-note"
         :index="i"
         :key="n.note_id"
         :note="n"
@@ -82,10 +83,9 @@ export default {
     try {
       const { id } = this.$route.params;
       const { user_id } = this.user;
-      if (this.notes.length === 0) {
-        await this.fetchNotes(user_id);
+      if (this.notes?.length === 0) {
+        await this.fetchNotes(user_id, true);
       }
-      await this.fetchRelatedNotes(id);
       this.note = await this.getNote(id);
     } catch (error) {
       console.error(error);
@@ -93,7 +93,6 @@ export default {
   },
   methods: {
     ...mapActions(notesStore, [
-      "fetchRelatedNotes",
       "fetchNotes",
       "getNote",
       "linkNotes",
