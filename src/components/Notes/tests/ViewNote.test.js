@@ -21,6 +21,7 @@ const note = {
   note_id: 1,
   note_title: "Test Note",
   note_text: "This is a test note",
+  note_reference: "This is a test reference",
   date_created: "2021-01-01",
   date_modified: "2021-01-01",
   tags: [
@@ -66,6 +67,7 @@ describe("ViewNote.vue", () => {
   it("Should display the note title and text", () => {
     expect(wrapper.find("h2").text()).toBe(note.note_title);
     expect(wrapper.find("p").text()).toBe(note.note_text);
+    expect(wrapper.find("p.reference").text()).toBe(note.note_reference);
   });
 
   it("Should display the note tags", () => {

@@ -16,6 +16,14 @@
           v-model="note_text"
         />
       </label>
+      <label class="mb-3">
+        <span>Reference:</span>
+        <input
+          class="form-control"
+          id="referenceInput"
+          v-model="note_reference"
+        />
+      </label>
     </div>
     <div v-if="error" id="create-note-error" class="alert alert-danger mt-3">
       {{ this.error }}
@@ -36,6 +44,7 @@ export default {
     return {
       note_title: "",
       note_text: "",
+      note_reference: "",
       error: "",
     };
   },
@@ -46,12 +55,15 @@ export default {
   methods: {
     ...mapActions(notesStore, ["createNote"]),
     async onCreate() {
-      const { note_title, note_text, user } = this;
+      const { note_title, note_text, note_reference, user } = this;
       if (!note_title || !note_text) {
         this.error = "Please fill in all fields";
         return;
       }
-      await this.createNote(note_title, note_text, user?.user_id);
+      await this.createNote(
+        { note_title, note_text, note_reference },
+        user?.user_id
+      );
       this.$emit("created");
     },
   },

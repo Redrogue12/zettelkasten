@@ -24,7 +24,7 @@ export const useNotesStore = defineStore("notes", {
     removeLinkedNote(index) {
       this.relatedNotes.splice(index, 1);
     },
-    async fetchNotes(user_id, fetchRelated = false) {
+    async fetchNotes(user_id) {
       if (!user_id) return Promise.reject("Invalid user id");
 
       if (this.notes.length > 0) return Promise.resolve(this.notes);
@@ -44,18 +44,13 @@ export const useNotesStore = defineStore("notes", {
         }
 
         this.notes = await response.json();
-        if (fetchRelated) {
-          const relatedNotes = await this.fetchRelatedNotes(
-            this.notes[0].note_id
-          );
-          this.relatedNotes = relatedNotes;
-        }
+
         return Promise.resolve(this.notes);
       } catch (error) {
         return Promise.reject("Failed to fetch notes");
       }
     },
-    async createNote(note_title, note_text, user_id) {
+    async createNote({ note_title, note_text, note_reference }, user_id) {
       if (!note_title || !note_text) return Promise.reject("Invalid note data");
       try {
         const token = localStorage.getItem("zettelkasten_token");
@@ -70,6 +65,7 @@ export const useNotesStore = defineStore("notes", {
             body: JSON.stringify({
               note_title,
               note_text,
+              note_reference,
             }),
           }
         );
@@ -86,14 +82,14 @@ export const useNotesStore = defineStore("notes", {
       }
     },
     async editNote(note) {
-      const { id, note_title, note_text } = note;
-      if (!id || !note_title || !note_text) {
+      const { note_id, note_title, note_text, note_reference } = note;
+      if (!note_id || !note_title || !note_text) {
         return Promise.reject("Invalid note data");
       }
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await fetch(
-          `${process.env.VUE_APP_SERVER}/notes/${id}`,
+          `${process.env.VUE_APP_SERVER}/notes/${note_id}`,
           {
             method: "PUT",
             headers: {
@@ -103,6 +99,7 @@ export const useNotesStore = defineStore("notes", {
             body: JSON.stringify({
               note_title,
               note_text,
+              note_reference,
             }),
           }
         );
@@ -112,7 +109,7 @@ export const useNotesStore = defineStore("notes", {
         }
 
         const result = await response.json();
-        const index = this.notes.findIndex((n) => n.id === id);
+        const index = this.notes.findIndex((n) => n.note_id === note_id);
         this.notes[index] = result;
         return Promise.resolve(result);
       } catch (error) {
@@ -201,7 +198,8 @@ export const useNotesStore = defineStore("notes", {
       }
     },
     async unlinkNotes(id1, id2, index) {
-      if (!id1 || !id2 || index) return Promise.reject("Invalid note ids");
+      if (!id1 || !id2 || !index === undefined)
+        return Promise.reject("Invalid note ids");
       try {
         const token = localStorage.getItem("zettelkasten_token");
         const response = await axios.delete(

@@ -16,6 +16,7 @@ describe("EditNote:", () => {
       note_id: 1,
       note_title: "Test Note",
       note_text: "This is a test note",
+      note_reference: "Test Reference",
       date_created: "2021-01-01",
       date_modified: "2021-01-01",
     };
@@ -32,6 +33,9 @@ describe("EditNote:", () => {
   it("Renders edit dialog correctly", () => {
     expect(wrapper.vm.$refs.titleInput.value).toBe(selectedNote.note_title);
     expect(wrapper.vm.$refs.textInput.value).toBe(selectedNote.note_text);
+    expect(wrapper.vm.$refs.referenceInput.value).toBe(
+      selectedNote.note_reference
+    );
     expect(wrapper.vm.$refs.editDateCreated.innerHTML).toBe(
       ` Created: ${new Date(selectedNote.date_created).toLocaleDateString()}`
     );
@@ -47,6 +51,7 @@ describe("EditNote:", () => {
     expect(mockStore.editNote).toHaveBeenCalledWith({
       note_title: "Test Note",
       note_text: "This is a test note",
+      note_reference: "Test Reference",
       note_id: 1,
       date_created: "2021-01-01",
       date_modified: "2021-01-01",

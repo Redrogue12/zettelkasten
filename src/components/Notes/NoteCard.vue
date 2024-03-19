@@ -5,7 +5,7 @@
     @click.stop="handleClick"
   >
     <h5>{{ truncatedNoteTitle }}</h5>
-    <p>{{ truncatedNoteText }}</p>
+    <p class="mb-0">{{ truncatedNoteText }}</p>
   </div>
 </template>
 
@@ -26,8 +26,8 @@ export default {
   emits: ["click"],
   computed: {
     truncatedNoteText() {
-      return this.note.note_text?.length > 88
-        ? this.note.note_text.substring(0, 88) + "..."
+      return this.note.note_text?.length > 150
+        ? this.note.note_text.substring(0, 150) + "..."
         : this.note.note_text;
     },
     truncatedNoteTitle() {
@@ -51,8 +51,8 @@ export default {
   border-radius: 4px;
   padding: 10px;
   margin: 10px;
-  width: 250px;
-  height: 125px;
+  width: 300px;
+  height: 175px;
   cursor: pointer;
   word-wrap: break-word;
 }

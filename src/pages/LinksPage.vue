@@ -1,5 +1,8 @@
 <template>
-  <div id="links-page" class="container">
+  <div class="center-content" v-if="loading">
+    <font-awesome-icon class="fa-3x fa-spin" icon="spinner" />
+  </div>
+  <div id="links-page" class="container" v-else>
     <div id="links-page-note">
       <h1>{{ note?.note_title }}</h1>
       <div class="notes-container">
@@ -59,6 +62,7 @@ export default {
     return {
       search: "",
       note: null,
+      loading: true,
     };
   },
   computed: {
@@ -84,9 +88,11 @@ export default {
       const { id } = this.$route.params;
       const { user_id } = this.user;
       if (this.notes?.length === 0) {
-        await this.fetchNotes(user_id, true);
+        await this.fetchNotes(user_id);
       }
+      await this.fetchRelatedNotes(id);
       this.note = await this.getNote(id);
+      this.loading = false;
     } catch (error) {
       console.error(error);
     }
@@ -94,6 +100,7 @@ export default {
   methods: {
     ...mapActions(notesStore, [
       "fetchNotes",
+      "fetchRelatedNotes",
       "getNote",
       "linkNotes",
       "unlinkNotes",

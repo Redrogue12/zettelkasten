@@ -15,10 +15,15 @@
       @click.stop="clickTag"
     />
   </div>
+
   <div class="d-flex flex-wrap">
     <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" size="sm" />
   </div>
+
   <p class="d-inline">{{ note?.note_text }}</p>
+  <h5>Reference:</h5>
+  <p class="d-inline reference">{{ note?.note_reference }}</p>
+
   <div class="d-flex justify-content-end">
     <font-awesome-icon
       id="view-note-edit-icon"
@@ -47,9 +52,9 @@
   <div class="d-flex flex-wrap">
     <router-link
       class="mr-3 mb-3"
-      :to="`links/${rn.id}`"
+      :to="`links/${rn.note_id}`"
       v-for="rn in relatedNotes"
-      :key="rn.id"
+      :key="rn.note_id"
       >{{ rn.note_title }}</router-link
     >
   </div>

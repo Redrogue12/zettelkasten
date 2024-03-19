@@ -19,6 +19,14 @@
         v-model="localNote.note_text"
       />
     </label>
+    <label class="mb-3">
+      <span>Reference:</span>
+      <input
+        class="form-control"
+        ref="referenceInput"
+        v-model="localNote.note_reference"
+      />
+    </label>
   </div>
   <p ref="editDateCreated">
     Created: {{ new Date(selectedNote.date_created).toLocaleDateString() }}
@@ -48,7 +56,7 @@ export default {
     selectedNote: {
       type: Object,
       required: true,
-      default: () => ({ note_title: "", note_text: "" }),
+      default: () => ({ note_title: "", note_text: "", note_reference: "" }),
       validator: function (value) {
         // If the value is null or undefined, it's not valid
         if (value == null) return false;
@@ -58,6 +66,7 @@ export default {
           typeof value === "object" &&
           "note_title" in value &&
           "note_text" in value &&
+          "note_reference" in value &&
           "note_id" in value &&
           "date_created" in value &&
           "date_modified" in value
@@ -88,7 +97,7 @@ export default {
         await this.editNote(note);
         this.$emit("edited");
       } catch (error) {
-        this.error = error.message;
+        this.error = error;
       }
     },
   },
