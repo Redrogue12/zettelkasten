@@ -1,5 +1,5 @@
 <template>
-  <div id="notes-page">
+  <div id="notes-page" class="h-100">
     <PageHeader
       page-type="Notes"
       :error="error"

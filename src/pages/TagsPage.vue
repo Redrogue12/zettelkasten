@@ -1,5 +1,5 @@
 <template>
-  <div id="tags-page">
+  <div id="tags-page" class="h-100">
     <PageHeader
       :error="error"
       :user="user"
