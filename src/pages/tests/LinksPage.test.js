@@ -1,5 +1,10 @@
 import { shallowMount } from "@vue/test-utils";
 import { createPinia } from "pinia";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faSpinner);
 // import { computed } from "vue";
 
 import LinksPage from "../LinksPage.vue";
@@ -28,6 +33,9 @@ describe("Linksage", () => {
     wrapper = shallowMount(LinksPage, {
       global: {
         plugins: [pinia],
+        components: {
+          FontAwesomeIcon,
+        },
         mocks: {
           $route: {
             params: { id: 1 },
