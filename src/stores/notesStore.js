@@ -50,7 +50,9 @@ export const useNotesStore = defineStore("notes", {
         return Promise.reject("Failed to fetch notes");
       }
     },
-    async createNote({ note_title, note_text, note_reference }, user_id) {
+    async createNote(note, user_id) {
+      const { note_title, note_text, note_reference } = note;
+
       if (!note_title || !note_text) return Promise.reject("Invalid note data");
       try {
         const token = localStorage.getItem("zettelkasten_token");
