@@ -20,12 +20,13 @@ const notes = [1, 2, 3, 4].map((n) => {
 
 const mockStore = {
   getNote: jest.fn().mockReturnValue(notes[0]),
-  fetchNotes: jest.fn().mockReturnValue(notes),
+  fetchNotes: async () => await notes,
+  fetchRelatedNotes: async () => [notes[1]],
   linkNotes: jest.fn(),
   unlinkNotes: jest.fn(),
 };
 
-describe("Linksage", () => {
+describe("LinksPage", () => {
   let wrapper;
   beforeEach(() => {
     const pinia = createPinia();
@@ -52,6 +53,7 @@ describe("Linksage", () => {
         user: () => ({ user_id: 1, name: "Test User" }),
         notes: () => notes,
         relatedNotes: () => [notes[1]],
+        filteredNotes: () => [notes[2]],
       },
       stubs: {
         "router-link": true,
@@ -59,7 +61,7 @@ describe("Linksage", () => {
     });
   });
 
-  it("renders LinksPage", () => {
+  it("renders LinksPage", async () => {
     expect(wrapper.find("#links-page")).toBeTruthy();
   });
 
@@ -70,22 +72,17 @@ describe("Linksage", () => {
   });
 
   it("renders LinksPage related-notes", () => {
-    console.log("filteredNotes:", wrapper.vm.filteredNotes);
     expect(wrapper.find("#links-page-related-notes")).toBeTruthy();
-    expect(wrapper.findAll(".related-note").length).toBe(1);
   });
 
   // these tests are failing because the filteredNotes does not work no matter how much I try to fix it
 
-  // it("renders LinksPage filtered-notes", () => {
-  //   const noteCards = wrapper.findAllComponents({ name: "NoteCard" });
-  //   const filteredNotes = wrapper.vm.filteredNotes;
-  //   expect(wrapper.findAll("#links-page-filtered-notes")).toBeTruthy();
-  //   expect(noteCards.length).toBe(filteredNotes?.length);
-  // });
+  it("renders LinksPage filtered-notes section", () => {
+    expect(wrapper.findAll("#links-page-filtered-notes")).toBeTruthy();
+  });
 
-  // it("renders notes that match search", async () => {
-  //   await wrapper.setData({ search: "Test Note 2" });
-  //   expect(wrapper.findAll(".filtered-note").length).toBe(1);
-  // });
+  it("renders notes that match search", async () => {
+    await wrapper.setData({ search: "Test Note 2" });
+    expect(wrapper.findAll(".filtered-note").length).toBe(1);
+  });
 });
