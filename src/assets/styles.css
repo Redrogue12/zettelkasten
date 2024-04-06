@@ -10,6 +10,13 @@ body,
   overflow-y: auto;
 }
 
+pre {
+  font-size: inherit !important;
+  font-family: inherit !important;
+  white-space: pre-wrap; /* Allow wrapping within <pre> tags */
+  word-wrap: break-word; /* Break long words to prevent overflow */
+}
+
 .pointer {
   cursor: pointer;
 }

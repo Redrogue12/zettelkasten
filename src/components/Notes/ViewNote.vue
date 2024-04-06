@@ -20,7 +20,7 @@
     <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" size="sm" />
   </div>
 
-  <p class="d-inline">{{ note?.note_text }}</p>
+  <p class="d-inline"><pre>{{ note?.note_text }}</pre></p>
   <h5>Reference:</h5>
   <p class="d-inline reference">{{ note?.note_reference }}</p>
 

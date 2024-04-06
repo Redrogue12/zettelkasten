@@ -8,7 +8,7 @@
       <div class="notes-container">
         <TagPill v-for="tag in note?.tags" :key="tag.tag_id" :tag="tag" />
       </div>
-      <p>{{ note?.note_text }}</p>
+      <p><pre>{{ note?.note_text }}</pre></p>
     </div>
     <hr />
     <div id="links-page-related-notes">
