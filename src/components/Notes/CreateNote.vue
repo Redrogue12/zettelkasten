@@ -68,8 +68,9 @@ export default {
     },
   },
   mounted() {
-    if (this.$refs.titleInput) {
-      this.$refs.titleInput.focus();
+    const input = document.getElementById("titleInput");
+    if (input) {
+      input.focus();
     }
   },
 };
