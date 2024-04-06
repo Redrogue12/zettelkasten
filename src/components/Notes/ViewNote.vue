@@ -22,7 +22,15 @@
 
   <p class="d-inline"><pre>{{ note?.note_text }}</pre></p>
   <h5>Reference:</h5>
-  <p class="d-inline reference">{{ note?.note_reference }}</p>
+  <a
+    v-if="isUrl(note?.note_reference)"
+    class="reference d-inline"
+    :href="note?.note_reference"
+    target="_blank"
+  >
+    {{ note?.note_reference }}
+  </a>
+  <p v-else class="d-inline reference">{{ note?.note_reference }}</p>
 
   <div class="d-flex justify-content-end">
     <font-awesome-icon
@@ -104,6 +112,10 @@ export default {
     },
     editDialog() {
       this.$emit("edit-dialog", this.note);
+    },
+    isUrl(str) {
+      const urlRegex = /^(http:\/\/|https:\/\/|ftp:\/\/)/;
+      return urlRegex.test(str.trim());
     },
   },
 };
