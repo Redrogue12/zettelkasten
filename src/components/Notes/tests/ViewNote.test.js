@@ -30,33 +30,45 @@ const note = {
   ],
 };
 
+const note2 = {
+  ...note,
+  note_reference: "https://example.com",
+};
+
+function createWrapper(noteProps, pinia = createPinia()) {
+  pinia.use(() => mockStore);
+  return shallowMount(ViewNote, {
+    propsData: {
+      note: noteProps,
+    },
+    global: {
+      plugins: [pinia],
+      components: {
+        FontAwesomeIcon,
+      },
+      mocks: {
+        $route: {
+          params: { id: 1 },
+        },
+        $router: {
+          push: jest.fn(),
+        },
+      },
+      stubs: {
+        RouterLink: true,
+      },
+    },
+  });
+}
+
 describe("ViewNote.vue", () => {
   let wrapper;
+  let wrapper2;
   beforeEach(() => {
-    const pinia = createPinia();
-    pinia.use(() => mockStore);
-
-    wrapper = shallowMount(ViewNote, {
-      propsData: {
-        note,
-      },
-      global: {
-        plugins: [pinia],
-        components: {
-          FontAwesomeIcon,
-        },
-        mocks: {
-          $route: {
-            params: { id: 1 },
-          },
-          $router: {
-            push: jest.fn(),
-          },
-        },
-        stubs: {
-          RouterLink: true,
-        },
-      },
+    wrapper = createWrapper(note);
+    wrapper2 = createWrapper({
+      ...note,
+      note_reference: "https://example.com",
     });
   });
 
@@ -67,7 +79,11 @@ describe("ViewNote.vue", () => {
   it("Should display the note title and text", () => {
     expect(wrapper.find("h2").text()).toBe(note.note_title);
     expect(wrapper.find("p").text()).toBe(note.note_text);
+  });
+
+  it("If there is a reference, display appropriate tag", async () => {
     expect(wrapper.find("p.reference").text()).toBe(note.note_reference);
+    expect(wrapper2.find("a.reference").text()).toBe(note2.note_reference);
   });
 
   it("Should display the note tags", () => {
